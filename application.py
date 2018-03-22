@@ -1,34 +1,30 @@
+#!/usr/bin/env python3
 from flask import Flask
+from flask_restful import Api, Resource, abort
+from webargs import fields, validate
+from webargs.flaskparser import use_kwargs, parser 
 
-# print a nice greeting.
-def say_hello(username = "World"):
-    return '<h1>Hello TESTTESTTEST%s!</h1>\n' % username
+app = Flask(__name__)
+api = Api(app)
 
-# some bits of text for the page.
-header_text = '''
-    <html>\n<head> <title>EB Flask Test</title> </head>\n<body>'''
-instructions = '''
-    <p><em>Hint</em>: This is a RESTful web service! Append a username
-    to the URL (for example: <code>/Thelonious</code>) to say hello to
-    someone specific.</p>\n'''
-home_link = '<p><a href="/">Back</a></p>\n'
-footer_text = '</body>\n</html>'
+class Company(Resource):
+    args = {
+        'start_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
+        'end_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
+    }
+    @use_kwargs(args)
+    def get(self, name, start_time, end_time):
+        return {"name": name, "start": str(start_time), "end": str(end_time)}, 200
 
-# EB looks for an 'application' callable by default.
-application = Flask(__name__)
+@app.route('/')
+def index():
+    return "Hello, World!"
 
-# add a rule for the index page.
-application.add_url_rule('/', 'index', (lambda: header_text +
-    say_hello() + instructions + footer_text))
 
-# add a rule when the page is accessed with a name appended to the site
-# URL.
-application.add_url_rule('/<username>', 'hello', (lambda username:
-    header_text + say_hello(username) + home_link + footer_text))
+@parser.error_handler
+def handle_error(err):
+    abort(422, errors=err.messages)
 
-# run the app.
-if __name__ == "__main__":
-    # Setting debug to True enables debug output. This line should be
-    # removed before deploying a production app.
-    application.debug = True
-    application.run()
+if __name__ == '__main__':
+    api.add_resource(Company, "/company/<string:name>")
+    app.run(debug=True)
