@@ -14,9 +14,7 @@ class Company(Resource):
     }
     @use_kwargs(args)
     def get(self, name, start_time, end_time):
-        if name == "Viv":
-            return {"name": name, "start": str(start_time), "end": str(end_time)}, 200
-        return "dunno what you talking about", 404 
+        return {"name": name, "start": str(start_time), "end": str(end_time)}, 200
 
 @app.route('/')
 def index():
