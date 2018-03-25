@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!flask/bin/python3
 from flask import Flask
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate

@@ -1,15 +1,11 @@
 Setup instructions
 ==================
-1. Run `pip install flask flask-restful`
-2. Run `./app.py`
+1. Run `python3 -m venv flask`
+2. Run `. flask/bin/activate` to activate the virtual environment
+3. Run `pip3 install -r requirements.txt` to install all the required libraries
+4. Run `./application.py`
 
-
-Testing
+Calling endpoints
 ==================
-This is only a test for the skeleton which echos "Viv"
-* Install Postman OR Insomnia on your computer (They are API testing tools)
-* Once you have the app running in your local host
-* put http://127.0.0.1:5000/company/Viv?start_time=2015-10-01T08:45:10.295Z&end_time=2015-10-01T08:45:10.295Z `should return a JSON object with Name, Start and End
-* Other invalid input should throw an error
-
-`curl -X GET http://localhost:5000`
+To call endpoints execute `curl -X GET http://localhost:5000` and append the endpoint.
+e.g. `curl -X GET "http://localhost:5000/company/company_name?start_time=2015-10-01T08:45:10.295Z&end_time=2015-10-01T08:45:10.295Z"`
