@@ -16,7 +16,11 @@ class Company(Resource):
 	asx_dict = get_asx_list()
 	print asx_dict.keys()
 
-	# returns facebook page id
+	################################
+	#### GET FACEBOOK ID		####
+	#### input: query string	####
+	#### return: fb page ID		####
+	################################
 	def getFacebookID(self, name):
 		# name can be provided as ASX ticker code (WOW.ASX) OR company name (Woolworths)	
 		# if ticker code (regex ***.ASX: look through dict
@@ -39,27 +43,38 @@ class Company(Resource):
 	args = {
         'start_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
         'end_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
-		'CompanyID': fields.Str(required=False),	# e.g. 'WOW.AX' or 'Woolworths' 
-										# (format is identified in getFacebookID)
-		#'CompanyIDs': fields.Str(),	# e.g. 'Woolworths'
-		#'stats': fields.DelimitedList(fields.Str(), required=True),
+		'company_id': fields.Str(required=False),	# e.g. 'WOW.AX' or 'Woolworths' 
+		'stats': fields.DelimitedList(fields.Str(), required=False),
 				# example usage: "/?stats=id,name,website,description"
 				# stats can include id, name, website, description, category, fan_count, post_type, post_message, post_created_time, post_like_count, post_comment_count
 			}
 	@use_kwargs(args)
+	####################################
+	#### GET						####
+	#### INPUT: queries from args	####
+	#### RETURN: json output		####
+	####################################
 	# GET must return json output with: PageId, InstrumentIDs, CompanyNames, PageName, Website, Description, Category, fan_count, posts[id, type, message, created_time, like_count, comment_count]
-	def get(self, name, start_time, end_time, CompanyID):
-		page_id = self.getFacebookID(str(CompanyID));
+	def get(self, name, start_time, end_time, company_id, stats):
+		page_id = self.getFacebookID(str(company_id));
 		print page_id;
 		return jsonify(
 			Start=(str(start_time)), 	# TESTING ONLY
 			End=str(end_time),			# TESTING ONLY
-			PageId=page_id
+			PageId=page_id,
+			InstrumentIDs='',
+			CompanyNames='',
+			PageName='',
+			Website='',
+			Description='',
+			Category='',
+			fan_count='',
+			posts=''
 		)
 
 @app.route('/')
 def index():
-    return "TESTESTEST QT314!"
+    return "TtESTESTEST QT314!"
 
 
 @parser.error_handler
