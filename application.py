@@ -1,5 +1,5 @@
 #usr/bin/env python3
-from flask import Flask, jsonify
+from flask import Flask
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs, parser 
@@ -28,11 +28,10 @@ class Company(Resource):
 		try:
 			match = re.match(r'([A-Za-z]{3})\.ASX', name).group(1)
 			if match is not None and match in self.asx_dict:
-				#if match in asx_dict
 				company_name = self.asx_dict[match]
-				# we should also edit out LIMITED stuff because that never shows up on search fb api
-			else:
-				pass #if not a match then must be a searchable company name already	
+				print company_name
+				company_name = re.sub('\sLIMITED','',company_name) # remove LIMITED bc it doesn't return results usually
+				print company_name
 		except:
 			pass	
 		return company_name
@@ -43,7 +42,6 @@ class Company(Resource):
 	args = {
         'start_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
         'end_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
-		'company_id': fields.Str(required=False),	# e.g. 'WOW.AX' or 'Woolworths' 
 		'stats': fields.DelimitedList(fields.Str(), required=False),
 				# example usage: "/?stats=id,name,website,description"
 				# stats can include id, name, website, description, category, fan_count, post_type, post_message, post_created_time, post_like_count, post_comment_count
@@ -55,22 +53,33 @@ class Company(Resource):
 	#### RETURN: json output		####
 	####################################
 	# GET must return json output with: PageId, InstrumentIDs, CompanyNames, PageName, Website, Description, Category, fan_count, posts[id, type, message, created_time, like_count, comment_count]
-	def get(self, name, start_time, end_time, company_id, stats):
-		page_id = self.getFacebookID(str(company_id));
+	def get(self, name, start_time, end_time, stats):
+		page_id = self.getFacebookID(str(name));
+		print stats;
+		for x in stats:
+			print x;
+			# SEARCH FOR INTERESTED STATISTICS HERE
 		print page_id;
-		return jsonify(
-			Start=(str(start_time)), 	# TESTING ONLY
-			End=str(end_time),			# TESTING ONLY
-			PageId=page_id,
-			InstrumentIDs='',
-			CompanyNames='',
-			PageName='',
-			Website='',
-			Description='',
-			Category='',
-			fan_count='',
-			posts=''
-		)
+		return {"name": name,
+				"start":str(start_time),
+				"end": str(end_time),
+				"PageID": page_id,
+				"InstrumentIDs":'',
+				"CompanyNames":'',
+				"PageName":'',
+				"Website":'',
+				"Description":'',
+				"Category":'',
+				"fan_count":'',
+				"posts":{
+					"hello":'',
+					
+				}
+
+
+
+		}
+		
 
 @app.route('/')
 def index():
