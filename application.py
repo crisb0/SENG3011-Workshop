@@ -1,5 +1,5 @@
-#!flask/bin/python
-from flask import Flask, request
+#!flask/bin/python3
+from flask import Flask
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs, parser 
