@@ -62,7 +62,7 @@ class Company(Resource):
 
 @app.route('/')
 def index():
-    return "TtESTESTEST QT314!"
+    return "tTESTESTEST QT314!"
 
 
 @parser.error_handler
