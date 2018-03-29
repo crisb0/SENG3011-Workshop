@@ -91,7 +91,9 @@ class Company(Resource):
 
             #TODO: include instrument id
             return response
-         
+class CompanyIndex(Resource):
+    def get(self):
+        return 'the company root page' 
 @app.route('/')
 def index():
     return "qt314 api"
@@ -102,4 +104,5 @@ def handle_error(err):
 
 if __name__ == '__main__':
     api.add_resource(Company, "/company/<string:name>")
+    api.add_resource(CompanyIndex, "/company/")
     app.run(debug=True)
