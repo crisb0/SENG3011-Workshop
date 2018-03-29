@@ -7,7 +7,7 @@ import re
 import requests, os
 
 # import fncs from files
-from other import get_asx_list
+from other import get_asx_list, getFacebookID, createFields
 
 app = Flask(__name__)
 api = Api(app)
@@ -17,27 +17,29 @@ class Company(Resource):
     asx_dict = get_asx_list()
     print asx_dict.keys()[0] # testing only
 
-    def getFacebookID(self, name):
-        # name can be provided as ASX ticker code (WOW.ASX) OR company name (Woolworths)    
-        # if ticker code (regex ***.ASX): look through dict
-        company_name = name
-        try:
-            #if name provided is an instrument id
-            match = re.match(r'([A-Za-z]{3})\.ASX', name).group(1)
-            if match is not None and match in self.asx_dict:
-                company_name = self.asx_dict[match]
-                company_name = re.sub('\sLIMITED','',company_name)
-                instrument_id = name
-            else:
-                print("Company not found")
-                ### eRROR HANDLING REQUIRED
-        except:
-            pass
+    # def getFacebookID(self, name):
+    #     # name can be provided as ASX ticker code (WOW.ASX) OR company name (Woolworths)    
+    #     # if ticker code (regex ***.ASX): look through dict
+    #     company_name = name
+    #     try:
+    #         #if name provided is an instrument id
+    #         match = re.match(r'([A-Za-z]{3})\.ASX', name).group(1)
+    #         if match is not None and match in self.asx_dict:
+    #             company_name = self.asx_dict[match]
+    #             company_name = re.sub('\sLIMITED','',company_name)
+    #             instrument_id = name
+    #         else:
+    #             print("Company not found")
+    #             ### eRROR HANDLING REQUIRED
+    #     except:
+    #         pass
 
-        #TODO: if company name string provided, find instrument id
-        return company_name
+    #     #TODO: if company name string provided, find instrument id
+    #     return company_name
                     
-            
+    # def createFields(self, stats):
+    #     page_stats = ''
+    #     post_stats = ''
 
     args = {
         'start_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
@@ -47,27 +49,16 @@ class Company(Resource):
                 # "/?stats=all" will return ALL POSSIBLE RESULTS
                 # stats can include id, name, website, description, category, fan_count, post_type, post_message, post_created_time, post_like_count, post_comment_count
             }
-    @use_kwargs(args)
-    ####################################
-    #### GET                        ####
-    #### INPUT: queries from args   ####
-    #### RETURN: json output        ####
-    ####################################
-    # GET must return json output with: PageId, InstrumentIDs, CompanyNames, PageName, Website, Description, Category, fan_count, posts[id, type, message, created_time, like_count, comment_count]
-    # def get(self, name, start_time, end_time, stats):
-    #   page_name = self.getFacebookID(str(name));
-    #   print stats;
-    #   for x in stats:
-    #       print x;
-    #       # SEARCH FOR INTERESTED STATISTICS HERE
-    #   print page_name;
-    #   return "json obj";  
+    @use_kwargs(args) 
 
     def get(self, name, start_time, end_time, stats):
             # Check to see if name is an instrument id
                 # if yes then convert
-            page_name = self.getFacebookID(str(name))
-            
+            page_name = getFacebookID(str(name), self.asx_dict)
+            if stats is not None:
+                page_fields, post_fields = createFields(stats)
+
+            print "PAGE_FIELDS:", page_fields, "POST_FIELDS:", post_fields
             # Search for the company's facebook page and get it's page id
             page_search = requests.get("https://graph.facebook.com/v2.12/search?q=%s&type=page&fields=verification_status&access_token=%s" % (page_name, os.environ['FB_API_KEY'])).json()
 
@@ -80,25 +71,26 @@ class Company(Resource):
                     page_id = x['id']
                     break;
 
-            print "###############"
-            print stats
-            if 'id' in stats:
-                print "YESSSSSSSSSSSSSSS"
             # Get page stats
+            # print page_fields, post_fields
             page_stats = requests.get("https://graph.facebook.com/v2.11/%s?fields=name,website,about,category,fan_count&access_token=%s" % (page_id, os.environ['FB_API_KEY'])).json()  
-            print page_stats
+            # print page_stats
             # Get page posts
+
+            #convert stats to request format
+
             # page_posts = requests.get("https://graph.facebook.com/v2.11/%s/posts?access_token=%s" % (page_id, os.environ['FB_API_KEY'])).json()['data'] 
 
             # for post in range(len(page_posts)):
-            #     #print(page_posts[post])
+            #     # print(page_posts[post])
             #     temp_post = page_posts[post]
-                
+            #     if temp_post['id'] is not None:
+            #         print temp_post['id']
+            
             #     temp_post['post_id'] = temp_post.pop('id')
-            #     try: 
-            #         temp_post['post_message'] = temp_post.pop('message') 
-            #     except:
-            #         pass
+            #     # if temp_post['message']:
+            #     if 'message' in temp_post:
+            #         temp_post['post_message'] = temp_post.pop('message')
             #     temp_post['post_created_time'] = temp_post.pop('created_time')
 
             #     post_type = requests.get("https://graph.facebook.com/v2.11/%s?fields=type&access_token=%s" % (page_posts[post]['post_id'], os.environ['FB_API_KEY'])).json()['type']
@@ -121,16 +113,19 @@ class Company(Resource):
                 result['PageId'] = page_stats.pop('id')
             #TODO: find instrument ID and Company Name
             # result['InstrumentIDs'] = name
+
             if 'name' in stats:
                 result['PageName'] = page_stats.pop('name')
             if 'website' in stats:
                 result['Website'] = page_stats.pop('website')
-            if 'description' in stats:
+            if 'description' in stats and 'about' in page_stats:
                 result['Description'] = page_stats.pop('about')
             if 'category' in stats:
                 result['Category'] = page_stats.pop('category')
             if 'fan_count' in stats:
                 result['fan_count'] = page_stats.pop('fan_count')
+
+
             # result['posts'] = page_posts
             
             response = {}
