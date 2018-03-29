@@ -1,4 +1,4 @@
-#!flask/bin/python
+#!flask/bin/python3
 from flask import Flask
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
@@ -90,7 +90,7 @@ class Company(Resource):
 
             #TODO: include instrument id
             return response
-
+          
 @parser.error_handler
 def handle_error(err):
     abort(422, errors=err.messages) # 422 Unprocessable Entity
