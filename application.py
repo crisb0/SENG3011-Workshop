@@ -9,7 +9,7 @@ import requests, os
 # import fncs from files
 from other import get_asx_list, getFacebookID, createFields
 
-app = Flask(__name__, static_folder=".", template_folder=".")
+app = Flask(__name__)
 api = Api(app)
 
 
@@ -103,6 +103,6 @@ def handle_error(err):
     abort(422, errors=err.messages) # 422 Unprocessable Entity
 
 if __name__ == '__main__':
-    api.add_resource(Company, "/company/<string:name>")
-    api.add_resource(CompanyIndex, "/company/")
+    api.add_resource(Company, "/company/<string:name>", endpoint='company')
+    api.add_resource(CompanyIndex, "/company/", endpoint='companies')
     app.run(debug=True)
