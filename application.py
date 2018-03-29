@@ -9,7 +9,7 @@ import requests, os
 # import fncs from files
 from other import get_asx_list, getFacebookID, createFields
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".", template_folder=".")
 api = Api(app)
 
 
