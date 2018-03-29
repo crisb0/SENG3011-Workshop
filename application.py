@@ -1,4 +1,4 @@
-#usr/bin/env python3
+#!flask/bin/python
 from flask import Flask
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
@@ -22,7 +22,6 @@ class Company(Resource):
         'end_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
         'stats': fields.DelimitedList(fields.Str(), required=False),
                 # example usage: "/?stats=id,name,website,description"
-                # "/?stats=all" will return ALL POSSIBLE RESULTS
                 # stats can include id, name, website, description, category, fan_count, post_type, post_message, post_created_time, post_like_count, post_comment_count
             }
     @use_kwargs(args) 
@@ -33,7 +32,7 @@ class Company(Resource):
             page_name = getFacebookID(str(name), self.asx_dict)
             if stats is not None:
                 page_fields, post_fields = createFields(stats)
-
+            print(page_fields, post_fields)
             # Search for the company's facebook page and get it's page id
             page_search = requests.get("https://graph.facebook.com/v2.12/search?q=%s&type=page&fields=verification_status&access_token=%s" % (page_name, os.environ['FB_API_KEY'])).json()
             #print page_search
@@ -51,6 +50,7 @@ class Company(Resource):
             # Get page posts
             page_posts = requests.get("https://graph.facebook.com/v2.11/%s/posts?fields=%s&access_token=%s" % (page_id, post_fields, os.environ['FB_API_KEY'])).json()['data'] 
 
+            # JSON OUTPUT
             for post in range(len(page_posts)):
                 if 'post_id' in stats:
                     page_posts[post]['post_id'] = page_posts[post].pop('id')
@@ -71,14 +71,12 @@ class Company(Resource):
             if 'id' in stats:
                 result['PageId'] = page_stats.pop('id')
             #TODO: find instrument ID and Company Name
-            # result['InstrumentIDs'] = name
-
             if 'name' in stats:
                 result['PageName'] = page_stats.pop('name')
             if 'website' in stats and 'website' in page_stats:
                 result['Website'] = page_stats.pop('website')
-            if 'description' in stats and 'description' in page_stats:
-                result['Description'] = page_stats.pop('description')
+            if 'description' in stats and 'about' in page_stats:
+                result['Description'] = page_stats.pop('about')
             if 'category' in stats:
                 result['Category'] = page_stats.pop('category')
             if 'fan_count' in stats:

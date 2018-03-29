@@ -3,10 +3,10 @@ import csv, re
 
 # returns dict 
 def get_asx_list():
-	with open('ASXListedCompanies.csv', mode='rb') as f:
-		reader = csv.reader(f)
-		asx_dict = {rows[0]:rows[1] for rows in reader}
-	return asx_dict
+    with open('ASXListedCompanies.csv', mode='rt') as f:
+        reader = csv.reader(f)
+        asx_dict = {rows[0]:rows[1] for rows in reader}
+    return asx_dict
 
 def getFacebookID(name, asx_dict):
         # name can be provided as ASX ticker code (WOW.ASX) OR company name (Woolworths)    
@@ -29,13 +29,24 @@ def getFacebookID(name, asx_dict):
         return company_name
 
 def createFields(stats):
-	page_stats = []
-	post_stats = []
-	for x in stats: 
-		if re.match('^post.*', x):
-			post_stats.append(x)
-		else:
-			page_stats.append(x)
+    page_stats = ['id']
+    post_stats = ['id']
+    for x in stats: 
+        match = re.match('^post_(.*)', x)
+        if match is not None:
+            match = match.group(1)
+            field = match;
+            if match == 'like_count':
+                field = 'likes.limit(0).summary(total_count)'
+            if match == 'comment_count':
+                field = 'comments.limit(0).summary(total_count)'
+            if x != 'post_id':
+                post_stats.append(field)
+        else:
+            if x == 'description':
+                x = 'about'
+            if x != 'id':
+                page_stats.append(x)
 
-	# print ",".join(page_stats), "|", ",".join(post_stats)
-	return ",".join(page_stats), ",".join(post_stats)
+    print(','.join(page_stats), ','.join(post_stats))
+    return ','.join(page_stats), ','.join(post_stats)
