@@ -90,7 +90,11 @@ class Company(Resource):
 
             #TODO: include instrument id
             return response
-          
+         
+@app.route('/')
+def index():
+    return "qt314 API"
+ 
 @parser.error_handler
 def handle_error(err):
     abort(422, errors=err.messages) # 422 Unprocessable Entity
