@@ -20,7 +20,7 @@ class Company(Resource):
     args = {
         'start_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
         'end_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
-        'stats': fields.DelimitedList(fields.Str(), required=False),
+        'stats': fields.DelimitedList(fields.Str(), required=True),
                 # example usage: "/?stats=id,name,website,description"
                 # stats can include id, name, website, description, category, fan_count, post_type, post_message, post_created_time, post_like_count, post_comment_count
             }
@@ -34,7 +34,8 @@ class Company(Resource):
                 page_fields, post_fields = createFields(stats)
             print(page_fields, post_fields)
             # Search for the company's facebook page and get it's page id
-            page_search = requests.get("https://graph.facebook.com/v2.12/search?q=%s&type=page&fields=verification_status&access_token=%s" % (page_name, os.environ['FB_API_KEY'])).json()
+            #page_search = requests.get("https://graph.facebook.com/v2.12/search?q=%s&type=page&fields=verification_status&access_token=%s" % (page_name, os.environ['FB_API_KEY'])).json()
+            page_search = requests.get("https://graph.facebook.com/v2.12/search?q=%s&type=page&fields=verification_status&access_token=%s" % (page_name, os.environ.get('FB_API_KEY'))).json()
             #print page_search
 
             #Find the first blue verified result
@@ -46,9 +47,9 @@ class Company(Resource):
                     break;
 
             # Get page stats
-            page_stats = requests.get("https://graph.facebook.com/v2.11/%s?fields=%s&access_token=%s" % (page_id, page_fields, os.environ['FB_API_KEY'])).json()  
+            page_stats = requests.get("https://graph.facebook.com/v2.11/%s?fields=%s&access_token=%s" % (page_id, page_fields, os.environ.get('FB_API_KEY'))).json()  
             # Get page posts
-            page_posts = requests.get("https://graph.facebook.com/v2.11/%s/posts?fields=%s&access_token=%s" % (page_id, post_fields, os.environ['FB_API_KEY'])).json()['data'] 
+            page_posts = requests.get("https://graph.facebook.com/v2.11/%s/posts?fields=%s&access_token=%s" % (page_id, post_fields, os.environ.get('FB_API_KEY'))).json()['data'] 
 
             # JSON OUTPUT
             for post in range(len(page_posts)):
@@ -93,7 +94,7 @@ class Company(Resource):
          
 @app.route('/')
 def index():
-    return "qt314 API"
+    return "qt314 api"
  
 @parser.error_handler
 def handle_error(err):
