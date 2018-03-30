@@ -10,7 +10,7 @@ Running Locally
 1. Go to the graph api explorer https://developers.facebook.com/tools/explorer/
 2. Get personal user access token
 3. Go to shell that you will be running the application on
-4. Create environment variable `export FB_API_KEY="<USER_ACCESS_TOKEN>". To check if environ variable created successfully, `printenv`
+4. Create environment variable `export FB_API_KEY="<USER_ACCESS_TOKEN>"`. To check if environ variable created successfully, `printenv`
 5. Run `./application.py`
 
 Calling endpoints
