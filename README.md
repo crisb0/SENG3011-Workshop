@@ -5,6 +5,14 @@ Setup instructions
 3. Run `pip3 install -r requirements.txt` to install all the required libraries
 4. Run `./application.py`
 
+Running Locally
+==================
+1. Go to the graph api explorer https://developers.facebook.com/tools/explorer/
+2. Get personal user access token
+3. Go to shell that you will be running the application on
+4. Create environment variable `export FB_API_KEY="<USER_ACCESS_TOKEN>". To check if environ variable created successfully, `printenv`
+5. Run `./application.py`
+
 Calling endpoints
 =================
 To call endpoints execute `curl -X GET http://localhost:5000` and append the endpoint.
