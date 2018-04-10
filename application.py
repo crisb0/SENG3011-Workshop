@@ -12,44 +12,30 @@ from other import get_asx_list, getFacebookID, createFields
 app = Flask(__name__)
 api = Api(app)
 
-
 class Company(Resource):
+    
     asx_dict = get_asx_list()
-    # print asx_dict.keys()[0] # testing only
 
     args = {
-        'start_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
-        'end_time': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
+        'start_date': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
+        'end_date': fields.DateTime(format="%Y-%m-%dT%H:%M:%S.%fZ", required=True),
         'stats': fields.DelimitedList(fields.Str(), required=True),
-                # example usage: "/?stats=id,name,website,description"
-                # stats can include id, name, website, description, category, fan_count, post_type, post_message, post_created_time, post_like_count, post_comment_count
-            }
+    }
+    
+    # example usage: "/?stats=id,name,website,description"
+    # stats can include id, name, website, description, category, fan_count, post_type, post_message, post_created_time, post_like_count, post_comment_count
     @use_kwargs(args) 
-
-    def get(self, name, start_time, end_time, stats):
-            # Check to see if name is an instrument id
-                # if yes then convert
-            page_name = getFacebookID(str(name), self.asx_dict)
-            if stats is not None:
-                page_fields, post_fields = createFields(stats)
-            print(page_fields, post_fields)
-            # Search for the company's facebook page and get it's page id
-            #page_search = requests.get("https://graph.facebook.com/v2.12/search?q=%s&type=page&fields=verification_status&access_token=%s" % (page_name, os.environ['FB_API_KEY'])).json()
-            page_search = requests.get("https://graph.facebook.com/v2.12/search?q=%s&type=page&fields=verification_status&access_token=%s" % (page_name, os.environ.get('FB_API_KEY'))).json()
-            #print page_search
-
-            #Find the first blue verified result
-            #TODO: Figure out how to validate that the page is the right one
-            page_id = page_search['data'][0]['id']        
-            for x in page_search['data']:
-                if x['verification_status'] == 'blue_verified':
-                    page_id = x['id']
-                    break;
+    def get(self, name, start_date, end_date, stats):
+        page_name = getFacebookID(str(name), self.asx_dict)
+        
+        if stats is not None:
+            page_fields, post_fields = createFields(stats)
 
             # Get page stats
-            page_stats = requests.get("https://graph.facebook.com/v2.11/%s?fields=%s&access_token=%s" % (page_id, page_fields, os.environ.get('FB_API_KEY'))).json()  
+            page_stats = requests.get("https://graph.facebook.com/v2.11/%s?fields=%s&access_token=%s" % (page_name, page_fields, os.environ.get('FB_API_KEY'))).json() 
+
             # Get page posts
-            page_posts = requests.get("https://graph.facebook.com/v2.11/%s/posts?fields=%s&access_token=%s" % (page_id, post_fields, os.environ.get('FB_API_KEY'))).json()['data'] 
+            page_posts = requests.get("https://graph.facebook.com/v2.11/%s/posts?fields=%s&access_token=%s" % (page_name, post_fields, os.environ.get('FB_API_KEY'))).json()['data'] 
 
             # JSON OUTPUT
             for post in range(len(page_posts)):
@@ -91,9 +77,7 @@ class Company(Resource):
 
             #TODO: include instrument id
             return response
-class CompanyIndex(Resource):
-    def get(self):
-        return 'the company root page' 
+
 @app.route('/')
 def index():
     return "qt314 api"
@@ -102,7 +86,7 @@ def index():
 def handle_error(err):
     abort(422, errors=err.messages) # 422 Unprocessable Entity
 
-api.add_resource(Company, "/company/<string:name>", endpoint='company')
-api.add_resource(CompanyIndex, "/company/", endpoint='companies')
 if __name__ == '__main__':
+    api.add_resource(Company, "/v1/company/<string:name>", endpoint='company')
+
     app.run(debug=True)
