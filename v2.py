@@ -27,10 +27,22 @@ class v2Company(Resource):
             page_fields, post_fields = createFields(stats)
 
             # Get page stats
-            page_stats = requests.get("https://graph.facebook.com/v2.11/%s?fields=%s&access_token=%s" % (page_name, page_fields, os.environ.get('FB_API_KEY'))).json() 
+            page_stats = requests.get(
+                "https://graph.facebook.com/v2.11/%s?fields=%s&access_token=%s" % (
+                page_name, page_fields, 
+                os.environ.get('FB_API_KEY'))).json() 
+
+            if 'error' in page_stats.keys():
+                return page_stats
 
             # Get page posts
-            page_posts = requests.get("https://graph.facebook.com/v2.11/%s/posts?fields=%s&since=%s&until=%s&access_token=%s" % (page_name, post_fields, start_date.timestamp(), end_date.timestamp(), os.environ.get('FB_API_KEY'))).json()['data'] 
+            page_posts = requests.get(
+                "https://graph.facebook.com/v2.11/%s/posts?fields=%s&since=%s&until=%s&access_token=%s" % (
+                page_name, post_fields, start_date.timestamp(), end_date.timestamp(), 
+                os.environ.get('FB_API_KEY'))).json()['data'] 
+
+            if 'error' in page_stats.keys():
+                return page_posts
 
             # JSON OUTPUT
             for post in range(len(page_posts)):
