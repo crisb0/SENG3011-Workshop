@@ -86,7 +86,7 @@ def index():
 def handle_error(err):
     abort(422, errors=err.messages) # 422 Unprocessable Entity
 
-    api.add_resource(Company, "/v1/company/<string:name>", endpoint='company')
+api.add_resource(Company, "/v1/company/<string:name>", endpoint='company')
 if __name__ == '__main__':
 
     app.run(debug=True)
