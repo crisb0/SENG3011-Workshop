@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs, parser 
-from time import mktime, strptime
+import time
 import re, requests, os, sys
 
 from other import get_asx_list, getFacebookID, createFields
@@ -23,6 +23,9 @@ class v2Company(Resource):
     def get(self, name, start_date, end_date, stats):
         page_name = getFacebookID(str(name), self.asx_dict)
 
+        #logging
+        execution_start = time.time()
+
         if stats is not None:
             page_fields, post_fields = createFields(stats)
 
@@ -33,6 +36,7 @@ class v2Company(Resource):
                 os.environ.get('FB_API_KEY'))).json() 
 
             if 'error' in page_stats.keys():
+                page_stats['log_file'] = self.log_file(stats, page_stats['error']['message'], execution_start, time.time())
                 return page_stats
 
             # Get page posts
@@ -42,6 +46,7 @@ class v2Company(Resource):
                 os.environ.get('FB_API_KEY'))).json()['data'] 
 
             if 'error' in page_stats.keys():
+                page_posts['log_file'] = self.log_file(stats, page_posts['error']['message'], execution_start, time.time())
                 return page_posts
 
             # JSON OUTPUT
@@ -82,5 +87,21 @@ class v2Company(Resource):
             response = {}
             response['FacebookStatisticData'] = result
 
+            response['log_file'] = self.log_file(stats, None, execution_start, time.time())
+            
+
             #TODO: include instrument id
             return response
+
+    def log_file(self, parameters, error, start, end):
+        return {
+                'team': 'QT314',
+                'module_name': 'facebook_statistics/company',
+                'version': 'v2',
+                'parameters_passed': parameters,
+                'error': error,
+                'execution_start': start,
+                'execution_end': end,
+                'time_elapsed': end - start
+               }
+               
