@@ -1,5 +1,5 @@
 #!flask/bin/python3
-from flask import Flask
+from flask import Flask, render_template, request
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs, parser 
@@ -9,13 +9,13 @@ import requests, os
 # import fncs from files
 from other import get_asx_list, getFacebookID, createFields
 
-def displayJSON():
+def displayJSON(page, start, end, stats): #arguments will be all the query args: pageID, start_date, end_date, stats string
     print("Displaying JSON...")
-    result = requests.get("http://qt314.herokuapp.com/v1/company/atlassian?start_date=2015-10-01T08:45:10.295Z&end_date=2015-10-01T08:45:10.295Z&stats=id,name,website,description,category,fan_count,post_like_count,post_comment_count,post_type").json()
+    result = requests.get("http://qt314.herokuapp.com/v1/company/%s?start_date=%s&end_date=%s&stats=%s" % (page, start, end, stats)).json()
     print("Query successful...")
     result = result['FacebookStatisticData']
 
-    return result['Description']
+    return result
 
 
 
@@ -90,8 +90,17 @@ class Company(Resource):
 
 @app.route('/')
 def index():
-    result = displayJSON()
-    return result
+    #page = "atlassian"
+    #start = "2015-10-01T08:45:10.295Z"
+    #end = "2015-10-01T08:45:10.295Z"
+    #stats = "id,name,website,description,category,fan_count,post_like_count,post_comment_count,post_type"
+    #result = displayJSON(page, start, end, stats)
+    return render_template('index.html') 
+
+@app.route('/result', methods = ['POST'])
+def result():
+    result = request.form
+    return render_template("results.html", result=result)
  
 @parser.error_handler
 def handle_error(err):
