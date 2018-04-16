@@ -9,6 +9,16 @@ import requests, os
 # import fncs from files
 from other import get_asx_list, getFacebookID, createFields
 
+def displayJSON():
+    print("Displaying JSON...")
+    result = requests.get("http://qt314.herokuapp.com/v1/company/atlassian?start_date=2015-10-01T08:45:10.295Z&end_date=2015-10-01T08:45:10.295Z&stats=id,name,website,description,category,fan_count,post_like_count,post_comment_count,post_type").json()
+    print("Query successful...")
+    result = result['FacebookStatisticData']
+
+    return result['Description']
+
+
+
 app = Flask(__name__)
 api = Api(app)
 
@@ -80,7 +90,8 @@ class Company(Resource):
 
 @app.route('/')
 def index():
-    return "qt314 api"
+    result = displayJSON()
+    return result
  
 @parser.error_handler
 def handle_error(err):
