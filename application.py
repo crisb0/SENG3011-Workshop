@@ -99,7 +99,8 @@ def index():
 
 @app.route('/result', methods = ['POST'])
 def result():
-    result = request.form
+    form = request.form
+    result = displayJSON(form['Page'],form['Start'], form['End'], form['Stats'])
     return render_template("results.html", result=result)
  
 @parser.error_handler
