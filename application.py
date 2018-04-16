@@ -1,5 +1,5 @@
 #!flask/bin/python3
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs, parser 
@@ -14,7 +14,6 @@ def displayJSON(page, start, end, stats): #arguments will be all the query args:
     result = requests.get("http://qt314.herokuapp.com/v1/company/%s?start_date=%s&end_date=%s&stats=%s" % (page, start, end, stats)).json()
     print("Query successful...")
     result = result['FacebookStatisticData']
-
     return result
 
 
@@ -71,7 +70,10 @@ class Company(Resource):
             if 'name' in stats:
                 result['PageName'] = page_stats.pop('name')
             if 'website' in stats and 'website' in page_stats:
-                result['Website'] = page_stats.pop('website')
+                temp = re.sub('.*://', '', page_stats.pop('website'))
+                print(temp)
+                result['Website'] = temp
+                # result['Website'] = page_stats.pop('website')
             if 'description' in stats and 'about' in page_stats:
                 result['Description'] = page_stats.pop('about')
             if 'category' in stats:
@@ -90,11 +92,6 @@ class Company(Resource):
 
 @app.route('/')
 def index():
-    #page = "atlassian"
-    #start = "2015-10-01T08:45:10.295Z"
-    #end = "2015-10-01T08:45:10.295Z"
-    #stats = "id,name,website,description,category,fan_count,post_like_count,post_comment_count,post_type"
-    #result = displayJSON(page, start, end, stats)
     return render_template('index.html') 
 
 @app.route('/result', methods = ['POST'])

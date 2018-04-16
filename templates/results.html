@@ -1,14 +1,46 @@
 <!DOCTYPE html>
 <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
+    <link rel='shortcut icon' type='image/x-icon' href="https://png.icons8.com/color/40/000000/orchid.png" />
+    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+
+
 </head>
 <body>
-    <table>
-        {% for key, value in result.items() %}
-            <tr>
-                <th> {{ key }} </th>
-                <td> {{ value }} </td>
-            </tr>
 
-        {% endfor %}
-    </table>
+    <div class="card">
+        <div>
+            {% if 'PageName' in result %}
+            <h1>{{ result['PageName'] }}</h1>
+            {% endif %}
+            
+            {% if 'Category' in result %}
+                <p class="subtle-text">{{result['Category']}}</p>
+            {% endif %}
+
+            {% if 'PageId' in result %}
+                <p class="subtle-text">ID: {{ result['PageId'] }}</p> 
+            {% endif %}
+
+            <div class="bar"></div>
+            
+            {% if 'Description' in result %}
+            <p class="text">{{ result['Description'] }}</p>
+            {% endif %}  
+            
+            {% if 'Website' in result %}
+
+<!-- some website links don't work, need to update application.py on heroku to edit regexp -->
+            <a target="_blank" class="bttn-stretch bttn-xs bttn-default" href="{{ ''.join(['http://', result['Website']]) }}">company website</a>
+            {% endif %}
+        
+            {% if 'fan_count' in result %}
+            <p><i style="margin-right:10px;" class="fa fa-child" aria-hidden="true"></i>{{result['fan_count']}}</p>
+            {% endif %}
+
+        </div>
+
+        <button class="bttn-stretch bttn-xs bttn-default" style="margin-top:20px;"type="button" onclick="window.history.back()">back</button>
+    </div>
+
 </body>
