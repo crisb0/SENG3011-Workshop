@@ -1,4 +1,3 @@
-#usr/bin/env python3
 import csv, re
 
 # returns dict 
@@ -48,5 +47,4 @@ def createFields(stats):
             if x != 'id':
                 page_stats.append(x)
 
-    print(','.join(page_stats), ','.join(post_stats))
     return ','.join(page_stats), ','.join(post_stats)
