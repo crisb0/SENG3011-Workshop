@@ -3,44 +3,102 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
     <link rel='shortcut icon' type='image/x-icon' href="https://png.icons8.com/color/40/000000/orchid.png" />
     <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+    $('.accordion').find('.accordion-toggle').click(function() {
+        $(this).next().slideToggle('600');
+        $(".accordion-content").not($(this).next()).slideUp('600');
+    });
+    $('.accordion-toggle').on('click', function() {
+        $(this).toggleClass('active').siblings().removeClass('active');
+    });
+});
+    
+</script>
 
 
 </head>
 <body>
+    <div id="wrapper">
+        <div id="card">
+            <div>
+                {% if 'PageName' in result %}
+                <h1>{{ result['PageName'] }}</h1>
+                {% endif %}
+                
+                {% if 'Category' in result %}
+                    <p class="subtle-text">{{result['Category']}}</p>
+                {% endif %}
 
-    <div class="card">
-        <div>
-            {% if 'PageName' in result %}
-            <h1>{{ result['PageName'] }}</h1>
-            {% endif %}
+                {% if 'PageId' in result %}
+                    <p class="subtle-text">ID: {{ result['PageId'] }}</p> 
+                {% endif %}
+
+                <div class="bar"></div>
+                
+                {% if 'Description' in result %}
+                <p class="text">{{ result['Description'] }}</p>
+                {% endif %}  
+                
+                {% if 'Website' in result %}
+
+    <!-- some website links don't work, need to update application.py on heroku to edit regexp -->
+                <a target="_blank" class="bttn-stretch bttn-xs bttn-default" href="{{ ''.join(['http://', result['Website']]) }}">company website</a>
+                {% endif %}
             
-            {% if 'Category' in result %}
-                <p class="subtle-text">{{result['Category']}}</p>
-            {% endif %}
+                {% if 'fan_count' in result %}
+                <p><i style="margin-right:10px;" class="fa fa-child" aria-hidden="true"></i>{{result['fan_count']}}</p>
+                {% endif %}
 
-            {% if 'PageId' in result %}
-                <p class="subtle-text">ID: {{ result['PageId'] }}</p> 
-            {% endif %}
+                </div>
 
-            <div class="bar"></div>
-            
-            {% if 'Description' in result %}
-            <p class="text">{{ result['Description'] }}</p>
-            {% endif %}  
-            
-            {% if 'Website' in result %}
-
-<!-- some website links don't work, need to update application.py on heroku to edit regexp -->
-            <a target="_blank" class="bttn-stretch bttn-xs bttn-default" href="{{ ''.join(['http://', result['Website']]) }}">company website</a>
-            {% endif %}
-        
-            {% if 'fan_count' in result %}
-            <p><i style="margin-right:10px;" class="fa fa-child" aria-hidden="true"></i>{{result['fan_count']}}</p>
-            {% endif %}
-
+            <button class="bttn-stretch bttn-xs bttn-default" style="margin-top:20px;"type="button" onclick="window.history.back()">back</button>
         </div>
 
-        <button class="bttn-stretch bttn-xs bttn-default" style="margin-top:20px;"type="button" onclick="window.history.back()">back</button>
-    </div>
+        <div id='posts' class="accordion" style="text-align:left;">
+            {% for key in result['posts'] %}
+            <div class="accordion-toggle">
+                {% if key['post_type'] == 'photo' %}
+                    <p style="margin-right:20px;"><i style="margin-right:10px;" class="fa fa-image" aria-hidden="true"></i>{{ key['post_message'] }}</p>
+                {% elif key['post_type'] == 'video' %}
+                    <p style="margin-right:20px;"><i style="margin-right:10px;" class="fa fa-video" aria-hidden="true"></i>{{ key['post_message'] }}</p>
+                {% elif key['post_type'] == 'link' %}
+                    <p style="margin-right:20px;"><i style="margin-right:10px;" class="fa fa-link" aria-hidden="true"></i>{{ key['post_message'] }}</p>
+                {% elif key['post_type'] == 'status' %}
+                    <p style="margin-right:20px;"><i style="margin-right:10px;" class="fa fa-user" aria-hidden="true"></i>{{ key['post_message'] }}</p>
+                {% elif key['post_type'] == 'offer' %}
+                    <p style="margin-right:20px;"><i style="margin-right:10px;" class="fa fa-gift" aria-hidden="true"></i>{{ key['post_message'] }}</p>
+                {% else %}
+                    <p style="margin-right:20px;">{{ key['post_message'] }}</p>
+                {% endif %}
+                
+            </div>
+            <div class="accordion-content">
+                <p style="margin-right:20px;">
+                {% if key['post_id'] %}
+                    <i style="margin-right:10px;" class="fa fa-info-circle" aria-hidden="true"></i>{{ key['post_id'] }}&nbsp;
+                {% endif %}
 
+                {% if key['post_like_count'] %}
+                    <i style="margin-right:10px;" class="fa fa-thumbs-up" aria-hidden="true"></i>{{ key['post_like_count'] }}&nbsp;
+                {% endif %}
+
+                {% if key['post_comment_count'] %}
+                    <i style="margin-right:10px;" class="fa fa-comment" aria-hidden="true"></i>{{ key['post_comment_count'] }}&nbsp;
+                {% endif %}
+
+                {% if key['post_created_time'] %}
+                    <i style="margin-right:10px;" class="fa fa-clock" aria-hidden="true"></i>{{ key['post_created_time'] }}&nbsp;
+                {% endif %}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+
+
+
+    </div> 
 </body>
