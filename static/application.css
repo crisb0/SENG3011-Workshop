@@ -1,0 +1,30 @@
+body {
+  background-color: lightblue;
+}
+h1 {
+  font-family: Impact;
+  font-weight: normal;
+  text-align: center;
+  color: white;
+
+}
+#header {
+  background-color: black;
+  height: 50px;
+  width: 100%;
+  opacity: .9;
+  color: white;
+}
+
+.search_form form {
+  display: inline;
+}
+
+.container {
+  background-color: #6699CC;
+  max-width: 60%;
+}
+
+.main-center {
+  margin-top: 30px;
+}
