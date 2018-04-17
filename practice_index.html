@@ -9,14 +9,14 @@
 </head>
 
     <h1>Welcome, USER!</h1>
-    <body background="{{url_for('static', filename='main-background.jpg')}}">
+    <!--<body>
       <div class="container">
         <div class="row main">
-          <div class="main-form main-center">
+          <div class="main-form">-->
             <p>Search data for a company by filling in the fields below</p>
             <a href="https://icons8.com">Icons pack by Icons8</a>
-            <ul class="search_form">
-              <form class="form" action="http://127.0.0.1:5000/result", method = "POST">
+            <!--<ul class="search_form">-->
+              <!--<form class="form" action="http://127.0.0.1:5000/result", method = "POST">
 
                 <div class="form-group">
                   <label for="page">Company</label>
@@ -52,15 +52,20 @@
                       <input type="text" class="form-control" name="Stats" placeholder="Enter the stats you wish to know e.g. id, name, description"/>
                     </div>
                   </div>
-                </div>
+                </div>-->
 
-                <p><input type="submit" value="Submit" /></p>
+                <form action="http://127.0.0.1:5000/result", method = "POST">
+                    <p>Page <input type="text" name="Page" /></p>
+                    <p>Start <input type="text" name="Start" /></p>
+                    <p>End <input type="text" name="End" /></p>
+                    <p>Stats <input type="text" name="Stats" /></p>
+                    <p><input type="submit" value="Submit" /></p>
+                </form>
 
-                  <!--<p><input type="submit" value="Submit" /></p>-->
-              </form>
-              </ul>
-            </div>
+                  <!--<p><input type="submit" value="Submit" /></p>
+              </form>-->
+            <!--</div>
           </div>
-        </div>
+        </div>-->
       </body>
     <!--</ul>-->
