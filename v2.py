@@ -43,11 +43,13 @@ class v2Company(Resource):
             page_posts = requests.get(
                 "https://graph.facebook.com/v2.11/%s/posts?fields=%s&since=%s&until=%s&access_token=%s" % (
                 page_name, post_fields, start_date.timestamp(), end_date.timestamp(), 
-                os.environ.get('FB_API_KEY'))).json()['data'] 
+                os.environ.get('FB_API_KEY'))).json()
 
-            if 'error' in page_stats.keys():
+            if 'error' in page_posts.keys():
                 page_posts['log_file'] = self.log_file(stats, page_posts['error']['message'], execution_start, time.time())
                 return page_posts
+
+            page_posts = page_posts['data']
 
             # JSON OUTPUT
             for post in range(len(page_posts)):
