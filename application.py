@@ -1,7 +1,7 @@
 #!flask/bin/python3
 from flask import Flask
 from flask_restful import Api, Resource, abort
-
+import requests
 from v1 import Company as v1Company
 from v2 import v2Company
 
@@ -23,7 +23,7 @@ def index():
     result = displayJSON()
     return result
 
+api.add_resource(v1Company, "/v1/company/<string:name>")
+api.add_resource(v2Company, "/v2/company/<string:name>")
 if __name__ == '__main__':
-    api.add_resource(v1Company, "/v1/company/<string:name>")
-    api.add_resource(v2Company, "/v2/company/<string:name>")
     app.run(debug=True)
