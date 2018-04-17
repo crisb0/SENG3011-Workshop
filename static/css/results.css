@@ -82,7 +82,7 @@ h1 {
 .accordion-toggle.active:after{content:"";position:absolute;right:0;top:17px;width:0;height:0;border-bottom:5px solid #669999;border-left:5px solid rgba(0,0,0,0);border-right:5px solid rgba(0,0,0,0);}
 .accordion-toggle:before{content:"";position:absolute;right:0;top:17px;width:0;height:0;border-top:5px solid #000;border-left:5px solid rgba(0,0,0,0);border-right:5px solid rgba(0,0,0,0);}
 .accordion-toggle.active:before{display:none;}
-.accordion-content {display: none; font-family:'Rokkitt';}
+.accordion-content {display: none; font-family:'Rokkitt'; color: #669999;}
 
 
 
