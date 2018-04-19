@@ -13,35 +13,7 @@ def displayJSON(page, start, end, stats): #arguments will be all the query args:
     print("Displaying JSON...")
     result = requests.get("http://qt314.herokuapp.com/v1/company/%s?start_date=%s&end_date=%s&stats=%s" % (page, start, end, stats)).json()
     print("Query successful...")
-    stats = []
-    stat1 = request.form.get('stat_id')
-    if stat1:
-        stats.append('id')
-    stat2 = request.form.get('stat_name')
-    if stat2:
-        stats.append('name')
-    stat3 = request.form.get('stat_website')
-    if stat3:
-        stats.append('website')
-    stat4 = request.form.get('stat_description')
-    if stat4:
-        stats.append('description')
-    stat5 = request.form.get('stat_category')
-    if stat5:
-        stats.append('category')
-    stat6 = request.form.get('stat_fancount')
-    if stat6:
-        stats.append('fan_count')
-    stat7 = request.form.get('stat_postlikecount')
-    if stat7:
-        stats.append('post_like_count')
-    stat8 = request.form.get('stat_postcommentcount')
-    if stat8:
-        stats.append('post_comment_count')
-    stat9 = request.form.get('stat_posttype')
-    if stat9:
-        stats.append('post_type')
-    print(stats)
+
     result = result['FacebookStatisticData']
 
     # making the time look nice
@@ -61,6 +33,7 @@ api = Api(app)
 class Company(Resource):
 
     asx_dict = get_asx_list()
+
 #    stat1 = request.form.get('stat_id')
 #    print(stat1)
 
@@ -136,8 +109,37 @@ def index():
 @app.route('/result', methods = ['POST'])
 def result():
     form = request.form
+    stats_list = []
+    stat1 = request.form.get('stat_id')
+    if stat1:
+        stats_list.append('id')
+    stat2 = request.form.get('stat_name')
+    if stat2:
+        stats_list.append('name')
+    stat3 = request.form.get('stat_website')
+    if stat3:
+        stats_list.append('website')
+    stat4 = request.form.get('stat_description')
+    if stat4:
+        stats_list.append('description')
+    stat5 = request.form.get('stat_category')
+    if stat5:
+        stats_list.append('category')
+    stat6 = request.form.get('stat_fancount')
+    if stat6:
+        stats_list.append('fan_count')
+    stat7 = request.form.get('stat_postlikecount')
+    if stat7:
+        stats_list.append('post_like_count')
+    stat8 = request.form.get('stat_postcommentcount')
+    if stat8:
+        stats_list.append('post_comment_count')
+    stat9 = request.form.get('stat_posttype')
+    if stat9:
+        stats_list.append('post_type')
+    stats = ",".join(stats_list)
 
-    result = displayJSON(form['Page'],form['Start'], form['End'], form['Stats'])
+    result = displayJSON(form['Page'],form['Start'], form['End'], stats)
     return render_template("results.html", result=result)
 
 @parser.error_handler
