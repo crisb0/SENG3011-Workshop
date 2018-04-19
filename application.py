@@ -20,8 +20,7 @@ api = Api(app)
 
 @app.route('/')
 def index():
-    result = displayJSON()
-    return result
+    return "qt314 api" 
 
 api.add_resource(v1Company, "/v1/company/<string:name>")
 api.add_resource(v2Company, "/v2/company/<string:name>")
