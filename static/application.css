@@ -1,11 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Rokkitt|Raleway');
+
 body {
-  background-color: lightblue;
+  /*background-color: lightblue;*/
+  background-image: url(background.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
 }
 h1 {
-  font-family: Impact;
-  font-weight: normal;
+  font-family: "Raleway", serif;
+  font-weight: bold;
   text-align: center;
-  color: white;
+  color: black;
 
 }
 #header {
@@ -16,13 +22,18 @@ h1 {
   color: white;
 }
 
+.main {
+  margin: 40px 15px;
+}
+
 .search_form form {
   display: inline;
 }
 
 .container {
-  background-color: #6699CC;
+  background-color: #4d4d4d;
   max-width: 60%;
+  color: white;
 }
 
 .main-center {
