@@ -17,7 +17,7 @@ def displayJSON(page, start, end, stats): #arguments will be all the query args:
 
     # making the time look nice
     for i in result['posts']:
-        if i['post_created_time']:
+        if 'post_created_time' in i:
             temp = re.sub('[a-zA-Z]', ' ', i['post_created_time'])
             temp = re.sub('\+.*$', '', temp)
             i['post_created_time'] = temp
