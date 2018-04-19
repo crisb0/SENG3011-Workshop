@@ -78,10 +78,6 @@
             </div>
             <div class="accordion-content">
                 <p style="margin-right:20px;">
-                {% if key['post_id'] %}
-                    <i style="margin-right:10px;" class="fa fa-info-circle" aria-hidden="true"></i>{{ key['post_id'] }}&nbsp;
-                {% endif %}
-
                 {% if key['post_like_count'] %}
                     <i style="margin-right:10px;" class="fa fa-thumbs-up" aria-hidden="true"></i>{{ key['post_like_count'] }}&nbsp;
                 {% endif %}
@@ -93,6 +89,11 @@
                 {% if key['post_created_time'] %}
                     <i style="margin-right:10px;" class="fa fa-clock" aria-hidden="true"></i>{{ key['post_created_time'] }}&nbsp;
                 {% endif %}
+
+                {% if key['post_id'] %}
+                    <i style="margin-right:10px;" class="fa fa-info-circle" aria-hidden="true"></i>{{ key['post_id'] }}&nbsp;
+                {% endif %}
+
                 </p>
             </div>
             {% endfor %}
