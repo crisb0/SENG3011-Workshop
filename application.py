@@ -14,6 +14,14 @@ def displayJSON(page, start, end, stats): #arguments will be all the query args:
     result = requests.get("http://qt314.herokuapp.com/v1/company/%s?start_date=%s&end_date=%s&stats=%s" % (page, start, end, stats)).json()
     print("Query successful...")
     result = result['FacebookStatisticData']
+
+    # making the time look nice
+    for i in result['posts']:
+        if i['post_created_time']:
+            temp = re.sub('[a-zA-Z]', ' ', i['post_created_time'])
+            temp = re.sub('\+.*$', '', temp)
+            i['post_created_time'] = temp
+
     return result
 
 
