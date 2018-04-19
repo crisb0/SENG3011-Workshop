@@ -7,6 +7,31 @@ import re, requests, os, sys
 
 from other import get_asx_list, getFacebookID, createFields
 
+def create_fb_request(page_name, stats, start_time, end_time):
+    passthrough_stats = ["id", "name", "website", "description", "category", "fan_count"]
+    post_fields = {
+        "post_id": "id",
+        "post_type": "type",
+        "post_message": "message", 
+        "post_created_time": "created_time", 
+        "post_like_count": "likes.summary(true)", 
+        "post_comment_count": "comments.summary(true).filter(toplevel)" 
+    }
+    top_level_stats = []
+    per_post_stats = []
+    for stat in stats:
+        if stat in passthrough_stats:
+            top_level_stats.append(stat)
+        elif stat in post_fields:
+            per_post_stats.append(post_fields[stat])
+    requested_post_fields = "posts.fields(%s).since(%s).until(%s)" % \
+        (",".join(per_post_stats), int(start_time.timestamp()), int(end_time.timestamp()))
+    requested_fields = ",".join(top_level_stats + [requested_post_fields]) 
+    access_token = os.environ.get('FB_API_KEY')
+    request_string = "https://graph.facebook.com/v2.12/%s?fields=%s&access_token=%s" % (page_name, requested_fields, access_token)
+    return request_string
+
+
 class v2Company(Resource):
     
     asx_dict = get_asx_list()
@@ -17,6 +42,8 @@ class v2Company(Resource):
         'stats': fields.DelimitedList(fields.Str(), required=True),
     }
     
+
+
     # example usage: "/?stats=id,name,website,description"
     # stats can include id, name, website, description, category, fan_count, post_type, post_message, post_created_time, post_like_count, post_comment_count
     @use_kwargs(args) 
@@ -27,23 +54,20 @@ class v2Company(Resource):
         execution_start = time.time()
 
         if stats is not None:
-            page_fields, post_fields = createFields(stats)
+
+            request_url = create_fb_request(page_name, stats,start_date, end_date)
+            #page_fields, post_fields = createFields(stats)
 
             # Get page stats
-            page_stats = requests.get(
-                "https://graph.facebook.com/v2.11/%s?fields=%s&access_token=%s" % (
-                page_name, page_fields, 
-                os.environ.get('FB_API_KEY'))).json() 
+            print(request_url)
+            page_stats = requests.get(request_url).json() 
 
             if 'error' in page_stats.keys():
                 page_stats['log_file'] = self.log_file(stats, page_stats['error']['message'], execution_start, time.time())
                 return page_stats
 
-            # Get page posts
-            page_posts = requests.get(
-                "https://graph.facebook.com/v2.11/%s/posts?fields=%s&since=%s&until=%s&access_token=%s" % (
-                page_name, post_fields, start_date.timestamp(), end_date.timestamp(), 
-                os.environ.get('FB_API_KEY'))).json()['data'] 
+            
+            page_posts = page_stats['posts']['data'] 
 
             if 'error' in page_stats.keys():
                 page_posts['log_file'] = self.log_file(stats, page_posts['error']['message'], execution_start, time.time())
@@ -62,9 +86,9 @@ class v2Company(Resource):
                     page_posts[post]['post_comment_count'] = page_posts[post]['comments']['summary']['total_count']
                     page_posts[post].pop('comments')
                 if 'post_message' in stats and 'message' in page_posts[post]:
-                         page_posts[post]['post_message'] = page_posts[post].pop('message')
+                    page_posts[post]['post_message'] = page_posts[post].pop('message')
                 if 'post_created_time' in stats:
-                        page_posts[post]['post_created_time'] = page_posts[post].pop('created_time')
+                    page_posts[post]['post_created_time'] = page_posts[post].pop('created_time')
 
             result = {}
             if 'id' in stats:
