@@ -26,3 +26,24 @@ def getFacebookID(name, asx_dict):
 
         #TODO: if company name string provided, find instrument id
         return company_name
+def createFields(stats):	
+    page_stats = ['id']	
+    post_stats = ['id']	
+    for x in stats: 	
+        match = re.match('^post_(.*)', x)	
+        if match is not None:	
+            match = match.group(1)	
+            field = match;	
+            if match == 'like_count':	
+                field = 'likes.limit(0).summary(total_count)'	
+            if match == 'comment_count':	
+                field = 'comments.limit(0).summary(total_count)'	
+            if x != 'post_id':	
+                post_stats.append(field)	
+        else:	
+            if x == 'description':	
+                x = 'about'	
+            if x != 'id':	
+                page_stats.append(x)	
+	
+    return ','.join(page_stats), ','.join(post_stats)
