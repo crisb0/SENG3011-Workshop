@@ -12,7 +12,7 @@ from other import get_asx_list, getFacebookID, createFields
 
 def displayJSON(page, start, end, stats): #arguments will be all the query args: pageID, start_date, end_date, stats string
     print("Displaying JSON...")
-    result = requests.get("http://qt314.herokuapp.com/v1/company/%s?start_date=%s&end_date=%s&stats=%s" % (page, start, end, stats)).json()
+    result = requests.get("http://qt314.herokuapp.com/v2/company/%s?start_date=%s&end_date=%s&stats=%s" % (page, start, end, stats)).json()
     print("Query successful...")
 
     result = result['FacebookStatisticData']
@@ -24,6 +24,9 @@ def displayJSON(page, start, end, stats): #arguments will be all the query args:
             temp = re.sub('\+.*$', '', temp)
             i['post_created_time'] = temp
 
+    if 'Website' in result:
+        result['Website'] = re.sub('.*//', '', result['Website'])
+    
     return result
 
 
