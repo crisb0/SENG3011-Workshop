@@ -1,5 +1,5 @@
 #!flask/bin/python3
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs, parser
@@ -39,8 +39,9 @@ api = Api(app)
 def index():
     return render_template('index.html')
 
-@app.route('/result', methods = ['POST'])
+@app.route('/result', methods = ['GET','POST'])
 def result():
+    # if request.method == 'POST':
     form = request.form
     stats_list = []
     stat1 = request.form.get('stat_id')
@@ -81,8 +82,9 @@ def result():
         stats_list.append('post_created_time')
     stats = ",".join(stats_list)
 
-    result = displayJSON(form['Page'],form['Start'], form['End'], stats)
-    return render_template("results.html", result=result)
+    result1 = displayJSON(form['Page'],form['Start'], form['End'], stats)
+    # return redirect(url_for('result'))
+    return render_template("results.html", result=result1)
 
 api.add_resource(v1Company, "/v1/company/<string:name>")
 api.add_resource(v2Company, "/v2/company/<string:name>")
