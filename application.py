@@ -140,6 +140,12 @@ def result():
     stat10 = request.form.get('stat_postmessage')
     if stat10:
         stats_list.append('post_message')
+    stat11 = request.form.get('stat_postid')
+    if stat11:
+        stats_list.append('post_id')
+    stat12 = request.form.get('stat_postcreatedtime')
+    if stat12:
+        stats_list.append('post_created_time')
     stats = ",".join(stats_list)
 
     result = displayJSON(form['Page'],form['Start'], form['End'], stats)

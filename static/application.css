@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Rokkitt|Raleway');
+@import url('https://fonts.googleapis.com/css?family=Righteous');
 
 body {
   /*background-color: lightblue;*/
@@ -8,11 +8,10 @@ body {
   height: 100%;
 }
 h1 {
-	font-family: 'Raleway', serif;
-  font-weight: 900;
+	font-family: 'Righteous', serif;
   text-align: center;
-  color: black;
-  font-size: 52px;
+  color: white;
+  font-size: 55px;
 }
 h2 {
   font-family: "Poppins", sans-serif;
@@ -30,7 +29,7 @@ h2 {
 }
 
 .main {
-  margin: 40px 15px;
+  margin: 10px 15px;
 }
 
 .search_form form {
@@ -41,6 +40,8 @@ h2 {
   background-color: #4d4d4d;
   max-width: 60%;
   color: white;
+  border-radius: 30px;
+  margin-bottom: 20px;
 }
 
 .main-center {
