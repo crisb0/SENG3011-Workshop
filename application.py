@@ -1,6 +1,7 @@
 #!flask/bin/python3
 from flask import Flask, render_template, request, redirect
 from flask_restful import Api, Resource, abort
+<<<<<<< HEAD
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs, parser
 import re
@@ -10,6 +11,11 @@ from v2 import v2Company
 
 # import fncs from files
 from other import get_asx_list, getFacebookID, createFields
+=======
+import requests
+from v1 import Company as v1Company
+from v2 import v2Company
+>>>>>>> master
 
 def displayJSON(page, start, end, stats): #arguments will be all the query args: pageID, start_date, end_date, stats string
     print("Displaying JSON...")
@@ -34,6 +40,7 @@ api = Api(app)
 
 @app.route('/')
 def index():
+<<<<<<< HEAD
     return render_template('index.html')
 
 @app.route('/result', methods = ['POST'])
@@ -78,9 +85,11 @@ def result():
 @parser.error_handler
 def handle_error(err):
     abort(422, errors=err.messages) # 422 Unprocessable Entity
+=======
+    return "qt314 api" 
+>>>>>>> master
 
 api.add_resource(v1Company, "/v1/company/<string:name>")
 api.add_resource(v2Company, "/v2/company/<string:name>")
 if __name__ == '__main__':
-
     app.run(debug=True)
