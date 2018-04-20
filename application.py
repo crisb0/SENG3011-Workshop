@@ -39,7 +39,7 @@ api = Api(app)
 def index():
     return render_template('index.html')
 
-@app.route('/result', methods = ['GET','POST'])
+@app.route('/result', methods = ['POST','GET'])
 def result():
     # if request.method == 'POST':
     form = request.form
