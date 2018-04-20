@@ -8,12 +8,19 @@ body {
   height: 100%;
 }
 h1 {
-  font-family: "Raleway", serif;
-  font-weight: bold;
+	font-family: 'Raleway', serif;
+  font-weight: 900;
   text-align: center;
   color: black;
-
+  font-size: 52px;
 }
+h2 {
+  font-family: "Poppins", sans-serif;
+  padding-left: 5%;
+  font-weight: bold;
+  color: white;
+}
+
 #header {
   background-color: black;
   height: 50px;

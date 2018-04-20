@@ -2,13 +2,14 @@
 <head>
     <link rel='shortcut icon' type='image/x-icon' href="https://png.icons8.com/color/40/000000/orchid.png" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/application.css"
-      <header id="header">
+    <link rel="stylesheet" href="static/application.css">
         <title>qt3.14 SENG3011</title>
-      </header>
 </head>
 
-    <h1>Welcome, USER!</h1>
+    <header>
+      <h2>QT3.14</h2>
+    </header>
+    <h1>Facebook API</h1>
     <body background="{{url_for('static', filename='main-background.jpg')}}">
       <div class="container">
         <div class="row main">
@@ -71,6 +72,9 @@
                 </div>
                 <div class="checkbox">
                     <label class="checkbox"><input type="checkbox" name="stat_posttype" value="1">post_type</label>
+                </div>
+                <div class="checkbox">
+                    <label class="checkbox"><input type="checkbox" name="stat_postmessage" value="1">post_message</label>
                 </div>
 
                 <button type="submit" value="Submit" class="btn btn-primary">Search</button>

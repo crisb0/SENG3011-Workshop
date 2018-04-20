@@ -137,6 +137,9 @@ def result():
     stat9 = request.form.get('stat_posttype')
     if stat9:
         stats_list.append('post_type')
+    stat10 = request.form.get('stat_postmessage')
+    if stat10:
+        stats_list.append('post_message')
     stats = ",".join(stats_list)
 
     result = displayJSON(form['Page'],form['Start'], form['End'], stats)
