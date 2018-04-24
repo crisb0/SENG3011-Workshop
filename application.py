@@ -43,48 +43,49 @@ def index():
 def result():
     # if request.method == 'POST':
     form = request.form
-    stats_list = []
-    stat1 = request.form.get('stat_id')
-    if stat1:
-        stats_list.append('id')
-    stat2 = request.form.get('stat_name')
-    if stat2:
-        stats_list.append('name')
-    stat3 = request.form.get('stat_website')
-    if stat3:
-        stats_list.append('website')
-    stat4 = request.form.get('stat_description')
-    if stat4:
-        stats_list.append('description')
-    stat5 = request.form.get('stat_category')
-    if stat5:
-        stats_list.append('category')
-    stat6 = request.form.get('stat_fancount')
-    if stat6:
-        stats_list.append('fan_count')
-    stat7 = request.form.get('stat_postlikecount')
-    if stat7:
-        stats_list.append('post_like_count')
-    stat8 = request.form.get('stat_postcommentcount')
-    if stat8:
-        stats_list.append('post_comment_count')
-    stat9 = request.form.get('stat_posttype')
-    if stat9:
-        stats_list.append('post_type')
-    stat10 = request.form.get('stat_postmessage')
-    if stat10:
-        stats_list.append('post_message')
-    stat11 = request.form.get('stat_postid')
-    if stat11:
-        stats_list.append('post_id')
-    stat12 = request.form.get('stat_postcreatedtime')
-    if stat12:
-        stats_list.append('post_created_time')
-    stats = ",".join(stats_list)
+    if request.method == 'POST':
+        stats_list = []
+        stat1 = request.form.get('stat_id')
+        if stat1:
+            stats_list.append('id')
+        stat2 = request.form.get('stat_name')
+        if stat2:
+            stats_list.append('name')
+        stat3 = request.form.get('stat_website')
+        if stat3:
+            stats_list.append('website')
+        stat4 = request.form.get('stat_description')
+        if stat4:
+            stats_list.append('description')
+        stat5 = request.form.get('stat_category')
+        if stat5:
+            stats_list.append('category')
+        stat6 = request.form.get('stat_fancount')
+        if stat6:
+            stats_list.append('fan_count')
+        stat7 = request.form.get('stat_postlikecount')
+        if stat7:
+            stats_list.append('post_like_count')
+        stat8 = request.form.get('stat_postcommentcount')
+        if stat8:
+            stats_list.append('post_comment_count')
+        stat9 = request.form.get('stat_posttype')
+        if stat9:
+            stats_list.append('post_type')
+        stat10 = request.form.get('stat_postmessage')
+        if stat10:
+            stats_list.append('post_message')
+        stat11 = request.form.get('stat_postid')
+        if stat11:
+            stats_list.append('post_id')
+        stat12 = request.form.get('stat_postcreatedtime')
+        if stat12:
+            stats_list.append('post_created_time')
+        stats = ",".join(stats_list)
 
-    result1 = displayJSON(form['Page'],form['Start'], form['End'], stats)
-    # return redirect(url_for('result'))
-    return render_template("results.html", result=result1)
+        result1 = displayJSON(form['Page'],form['Start'], form['End'], stats)
+        # return redirect(url_for('result'))
+        return render_template("results.html", result=result1)
 
 api.add_resource(v1Company, "/v1/company/<string:name>")
 api.add_resource(v2Company, "/v2/company/<string:name>")
