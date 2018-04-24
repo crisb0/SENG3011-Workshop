@@ -1,5 +1,5 @@
 #!flask/bin/python3
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs, parser
@@ -7,8 +7,10 @@ import re
 import requests, os
 from v1 import Company as v1Company
 from v2 import v2Company 
+from v3 import v3Company
 
 from other import get_asx_list, getFacebookID, createFields
+import customerr
 
 def displayJSON(page, start, end, stats): #arguments will be all the query args: pageID, start_date, end_date, stats string
     print("Displaying JSON...")
@@ -87,7 +89,14 @@ def result():
         # return redirect(url_for('result'))
         return render_template("results.html", result=result1)
 
+@app.errorhandler(404)
+def page_not_found(e):
+	return "<h1>Invalid URL</h1> \
+		Usage: http://qt314.herokuapp.com/v[1/2/3]/company/COMPANY_NAME<br> \
+		For more information please refer to our <a href=\"http://yaminn.github.io\">docs</a>."
+
 api.add_resource(v1Company, "/v1/company/<string:name>")
 api.add_resource(v2Company, "/v2/company/<string:name>")
+api.add_resource(v3Company, "/v3/company/<string:name>")
 if __name__ == '__main__':
     app.run(debug=True)
