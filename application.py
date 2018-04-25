@@ -1,5 +1,5 @@
 #!flask/bin/python3
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_restful import Api, Resource, abort
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs, parser
@@ -86,6 +86,12 @@ def result():
         result1 = displayJSON(form['Page'],form['Start'], form['End'], stats)
         # return redirect(url_for('result'))
         return render_template("results.html", result=result1)
+
+@app.errorhandler(404)
+def page_not_found(e):
+	return "<h1>Invalid URL</h1> \
+		Usage: http://qt314.herokuapp.com/v[12]/company/COMPANY_NAME<br> \
+		For more information please refer to our <a href=\"http://yaminn.github.io\">docs</a>."
 
 api.add_resource(v1Company, "/v1/company/<string:name>")
 api.add_resource(v2Company, "/v2/company/<string:name>")
