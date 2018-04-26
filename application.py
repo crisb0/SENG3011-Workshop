@@ -6,7 +6,7 @@ from webargs.flaskparser import use_kwargs, parser
 import re
 import requests, os
 from v1 import Company as v1Company
-from v2 import v2Company 
+from v2 import v2Company
 
 from other import get_asx_list, getFacebookID, createFields
 
@@ -27,7 +27,7 @@ def displayJSON(page, start, end, stats): #arguments will be all the query args:
 
     if 'Website' in result:
         result['Website'] = re.sub('.*//', '', result['Website'])
-    
+
     return result
 
 
@@ -43,6 +43,12 @@ def index():
 def result():
     # if request.method == 'POST':
     form = request.form
+
+    date_start = request.form.get('start_date')
+    start = date_start + 'Z'
+    date_end = request.form.get('end_date')
+    end = date_end + 'Z'
+
     if request.method == 'POST':
         stats_list = []
         stat1 = request.form.get('stat_id')
@@ -83,7 +89,7 @@ def result():
             stats_list.append('post_created_time')
         stats = ",".join(stats_list)
 
-        result1 = displayJSON(form['Page'],form['Start'], form['End'], stats)
+        result1 = displayJSON(form['Page'], start, end, stats)
         # return redirect(url_for('result'))
         return render_template("results.html", result=result1)
 
