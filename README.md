@@ -21,3 +21,9 @@ e.g. `curl -X GET "http://localhost:5000/company/company_name?start_time=2015-10
 Adding new libraries
 ====================
 - When you add new libraries, make sure to update requirements.txt. You can do this by doing `pip freeze > requirements.txt`.
+
+Testing
+====================
+running `python3 test.py` will make requests to different groups' APIs and generates HTML that contains the diff of the outputs for each pair.
+
+
