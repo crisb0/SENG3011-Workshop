@@ -1,4 +1,4 @@
-import sys, requests
+import sys, requests, re, json
 
 api_list = {    "qt3.14": { "format":"http://qt314.herokuapp.com/v2/company/%s%s%s%s", 
                             "page":"accenture?", 
@@ -16,34 +16,36 @@ api_list = {    "qt3.14": { "format":"http://qt314.herokuapp.com/v2/company/%s%s
             }
 
 def negerr_req(req_deets):
-    print("Testing query with missing fields...")
     # test without id
     request = req_deets["format"] % ('?', req_deets["start_date"], req_deets["end_date"], req_deets["stats"])
-    res = mk_req(request)
-    print(request)
+    t1 = mk_req(request)
 
     # test without start_date
     request = req_deets["format"] % (req_deets["page"], '', req_deets["end_date"], req_deets["stats"])
-    res = mk_req(request)
-    print(request) 
+    t2 = mk_req(request)
 
     # test without end_date
     request = req_deets["format"] % (req_deets["page"], req_deets["start_date"], '', req_deets["stats"])
-    res = mk_req(request)
-    print(request) 
+    t3 = mk_req(request)
 
     # test without stats
     request = req_deets["format"] % (req_deets["page"], req_deets["start_date"], req_deets["end_date"], '')
-    res = mk_req(request)
-    print(request) 
+    t4 = mk_req(request)
 
+    if not t1 and not t2 and not t3 and not t4:
+        print("!error not correctly returned for missing parameter(s)")
 
 def mk_req(request):
     res = requests.get(request)
-    test_for_err(res) 
-
-def test_for_err(res):
-    pass
+    if str(res) != "<Response [400]>":
+        return True
+    try:
+        res_json = res.json()
+        if re.search('request_status.*:.*fail', str(res_json)):
+            return True
+    except:
+        pass
+    return False
 
 def read_request():
     negerr_req(api_list[sys.argv[1]])
