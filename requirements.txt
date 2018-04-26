@@ -7,6 +7,7 @@ Flask-RESTful==0.3.6
 gunicorn==18.0.0
 idna==2.6
 itsdangerous==0.24
+jsondiff==1.1.1
 Jinja2==2.10
 MarkupSafe==1.0
 marshmallow==2.15.0
@@ -16,3 +17,4 @@ six==1.11.0
 urllib3==1.22
 webargs==2.0.0
 Werkzeug==0.14.1
+
