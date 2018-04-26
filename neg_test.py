@@ -32,6 +32,9 @@ def negerr_req(req_deets):
     request = req_deets["format"] % (req_deets["page"], req_deets["start_date"], req_deets["end_date"], '')
     t4 = mk_req(request)
 
+    request = req_deets["format"] % ('', '', '', '')
+    t5 = mk_req(request)
+
     if not t1 and not t2 and not t3 and not t4:
         print("!error not correctly returned for missing parameter(s)")
 
