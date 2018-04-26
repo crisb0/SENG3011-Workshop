@@ -26,14 +26,21 @@ def bad_format():
     # testing with stats as list given with spaces instead of commas
     request = req_deets["format"] % (req_deets["page"], req_deets["start_date"], req_deets["end_date"], "&stats=id name website")
     t2 = mk_req(request)    
-    
-    if not t1 and not t2:
+
+    # testing with non-existent statistic
+    request = req_deets["format"] % (req_deets["page"], req_deets["start_date"], req_deets["end_date"], "&stats=id,name,blah,post_id,post_blah")
+    t3 = mk_req(request)
+
+    # testing same exact start and end date
+    request = req_deets["format"] % (req_deets["page"], req_deets["start_date"], req_deets["start_date"], req_deets["stats"])
+    t4 = mk_req(request)
+
+    if not t1 and not t2 and not t3 and not t4:
         print("!error not returned upon incorrect formatting of query parameters")
 
 
 def mk_req(request):
      res = requests.get(request)
-     print(res)
      if str(res) != "<Response [400]>":
          return True
      try:
