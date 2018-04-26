@@ -15,9 +15,8 @@
         <div class="row main">
           <div class="main-form main-center">
             <p>Search data for a company by filling in the fields below</p>
-            <a href="https://icons8.com">Icons pack by Icons8</a>
             <ul class="search_form">
-              <form class="form" action="http://127.0.0.1:5000/result", method = "POST">
+              <form class="form" action="{{url_for('result')}}", method = "POST">
 
                 <div class="form-group">
                   <label for="page">Company</label>
@@ -65,6 +64,8 @@
                   <div class="checkbox">
                     <label class="checkbox"><input type="checkbox" name="stat_fancount" value="1">fan_count</label>
                   </div>
+
+                    <p>Please tick at least one of the options below:</p>
                   <div class="checkbox">
                     <label class="checkbox"><input type="checkbox" name="stat_postlikecount" value="1">post_like_count</label>
                   </div>
