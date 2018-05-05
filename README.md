@@ -24,6 +24,6 @@ Adding new libraries
 
 Testing
 ====================
-running `python3 test.py` will make requests to different groups' APIs and generates HTML that contains the diff of the outputs for each pair.
+running `python3 big_test_file.py` will run a test suite that will generate std output and html files. 
 
 
