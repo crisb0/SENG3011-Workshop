@@ -1,82 +1,56 @@
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-	<meta class="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<title>Dashboard | Evie by unDraw</title>
-	<link rel='stylesheet' href='css/style.min.css' />
-	<link rel='stylesheet' href='css/custom.css' />
-	<!--<link rel='stylesheet' href='css/bootstrap.css' />-->
-</head>
-<body>
-	<!-- navbar -->
-	<div class="navbar">
-		<nav class="nav__mobile"></nav>
-		<div class="container">
-			<div class="navbar__inner">
-				<a href="#" class="navbar__logo">Logo</a>
-				<nav class="navbar__menu">
+{% extends "layout.html" %}
+{% block body %}
+<!-- Page content -->
+<div class="app">
+	<div class="container">
+		<div class="app__inner">
+			<div class="app__menu">
+				<ul class="vMenu">
+					<li><a href="#" class="vMenu--active">Active page</a></li>
+					<!--<li><a href="#stocks">Stocks</a></li>-->
+					<li><a href="#socialmedia">Social Media</a></li>
 					<ul>
-						<li><a href="/track-campaigns.html">Track campaigns</a></li>
-						<li><a href="/add-campaign.html">Add campaign</a></li>
-						<li><a href="/index.html">Logout</a></li>
+						<li><a href="#facebook">Facebook</a></li>
+						<li><a href="#"></a></li>
 					</ul>
-				</nav>
-				<div class="navbar__menu-mob"><a href="" id='toggle'><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" class=""></path></svg></a></div>
+					
+				</ul>
 			</div>
-		</div>
-	</div>
-	<!-- Page content -->
-	<div class="app">
-		<div class="container">
-			<div class="app__inner">
-				<div class="app__menu">
-					<ul class="vMenu">
-						<li><a href="#" class="vMenu--active">Active page</a></li>
-						<li><a href="#stocks">Stocks</a></li>
-						<li><a href="#socialmedia">Social Media</a></li>
-						<ul>
-							<li><a href="#facebook">Facebook</a></li>
-							<li><a href="#"></a></li>
-						</ul>
-						
-					</ul>
+			<div class="app__main">
+				<div class="text-container">
+					<h2 class="app__main__title">Welcome, {{ company.fbName }}</h2>
+					<p>Thank you for using our application, we look forward to helping you make the most you can out of your social media!</p>
 				</div>
-				<div class="app__main">
-					<div class="text-container">
-						<h2 class="app__main__title">Welcome, {{ companyName }}</h2>
-						<p>Thank you for using our application, we look forward to helping you make the most you can out of your social media!</p>
-					</div>
+				<!--<div class="text-container" id="stocks">
+					<h3>Stocks</h3>
+					<p>Graph showing a one year span here. Using chart.js and a team's company returns API  https://gionkunz.github.io/chartist-js/</p>
+				</div>-->
 
-					<div class="text-container" id="stocks">
-						<h3>Stocks</h3>
-						<p>Graph showing a one year span here. Using chart.js and a team's company returns API </p>
-					</div>
-
-					<div class="text-container" id="Social Media">
-						<h3>Social Media</h3>
-						<div id="Facebook">
-							<h4>Facebook</h4>
-							<p>In the past year you have...</p>
-							<div class="col-sm-3">
-								<img class="facebook-like-icon" src="images/thumbs-up.png" alt="facebook thumbs up">{{likes}}</p>
-							</div>
-							<div class="col-sm-3">
-								<p>{{ numPosts }} posts</p>
-							</div>
-							<div class="col-sm-3">
-								<p>{{ dailyPosts }} Daily posts</p>
-							</div>
-							<div class="col-sm-3">
-								<p>{{ reacs }} Reactions Per Post</p>
-							</div>
+				<div class="text-container" id="Social Media">
+					<h3>Social Media</h3>
+					<div id="Facebook">
+						<h4>Facebook</h4>
+						<p>In the past year you have...</p>
+						<div class="col-sm-3">
+							{% if 'fan_count' in facebook %}
+							<img class="facebook-like-icon" src="{{ url_for('static', filename='images/thumbs-up.png') }}" alt="facebook thumbs up">{{ facebook['fan_count'] }}</p>
+							{% endif %}
 						</div>
-						<p>A table showing the top posts of the past year </p>
+						<div class="col-sm-3">
+							<p>{{ numPosts }} posts</p>
+						</div>
+						<div class="col-sm-3">
+							<p>{{ dailyPosts }} Daily posts</p>
+						</div>
+						<div class="col-sm-3">
+							<p>{{ reacs }} Reactions Per Post</p>
+						</div>
 					</div>
+					<p>A table showing the top posts of the past year </p>
 				</div>
 			</div>
 		</div>
 	</div>
-	<script src="/static/js/app.min.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}
+

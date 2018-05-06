@@ -1,0 +1,37 @@
+/*Custom stuff*/
+.facebook-like-icon {
+  max-width: 20%;
+}
+
+
+
+
+.campaign {
+  display: inline-block;
+  padding: 6pt 20pt;
+  line-height: 1;
+  font-weight: 400;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 30px;
+  text-align: center;
+  text-decoration: none; 
+  }
+
+.campaign-in-progress{
+  background-color: #05bd8d;
+  border-color: #05bd8d;
+  color: #fff; 
+}
+
+.campaign-complete{
+  background-color: #666;
+  border-color: #666;
+  color:#fff;
+}
+
+.campaign-view{
+  line-height: 1;
+  margin-bottom: 0;
+
+}
