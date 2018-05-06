@@ -13,7 +13,7 @@
 		<nav class="nav__mobile"></nav>
 		<div class="container">
 			<div class="navbar__inner">
-				<a href="index.html" class="navbar__logo">TrackPants</a>
+				<a href="index.html" class="navbar__logo"><img src="{{url_for('static', filename='images/pants.svg')}}" style="height:30px; margin-right:10px; position:relative; top:5px;" />TrackPants</a>
 				<nav class="navbar__menu">
 					<ul>
 						<li><a target="_blank" rel="nofollow" href="https://yaminn.github.io">Documentation</a></li>
@@ -32,7 +32,7 @@
 			<div class="container">
 				<div class="hero__content">
 					<div class="hero__content__inner" id='navConverter'>
-						<h1 class="hero__title">Wear the pants and achieve your goals.</h1>
+						<span></span><h1 class="hero__title">Wear the pants and achieve your goals.</h1>
 						<p class="hero__text">TrackPants is a tool to organise and achieve your campaign goals. We let you take control of your company branding and social following. Descript here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent congue faucibus nunc, ut vehicula elit dapibus non. Suspendisse potenti. Vestibulum ut imperdiet augue, non vestibulum risus. Phasellus eu pharetra tellus.</p>
 						<a href="{{url_for('login')}}" class="button button__accent">Get started with TrackPants!</a>
                         <span id="scrollToNext" class="scroll">
