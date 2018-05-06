@@ -783,6 +783,7 @@ select {
           transform: scaleX(0);
           transition: transform 250ms ease-in-out; }
         .navbar__menu a:hover:after {
+          -webkit-transform: scaleX(1);
           transform: scaleX(1); } }
 
 .navbar__menu-mob {
@@ -1307,7 +1308,7 @@ select {
 
 .app__menu {
   width: 100%;
-  position: relative; }
+  position: fixed; }
   @media (min-width: 992px) {
     .app__menu {
       display: block;
@@ -1391,3 +1392,4 @@ select {
         border-bottom: 1px solid #6C63FF;
         transform: none;
         transition: none; } }
+
