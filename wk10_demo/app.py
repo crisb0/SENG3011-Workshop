@@ -17,6 +17,10 @@ def register():
 @app.route('/dash')
 def dash():
     return render_template("dashboard.html")
+    
+@app.route('/create-goal')
+def goals():
+    return render_template("create_goals.html")
 
 # add any other routes here!!!!
 

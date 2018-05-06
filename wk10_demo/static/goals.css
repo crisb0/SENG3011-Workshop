@@ -1,0 +1,33 @@
+.goals {
+  padding-top:102.66667px;
+}
+.goals-title {
+  font-size:1.728em;
+  padding-left: 5%;
+}
+
+.goals-media {
+  padding-left: 5%;
+  width: 50%;
+}
+
+.goals-inner {
+  -webkit-box-orient:horizontal;
+  -webkit-box-direction:normal;
+  -ms-flex-direction:row;
+  flex-direction:row
+}
+
+.row {
+  width:60%;
+  -ms-flex-negative:0;
+  flex-shrink:0;
+}
+
+.container {
+  margin-left: 2%;
+}
+
+input [type='datetime-local'] {
+  font-size: 1.7em;
+}
