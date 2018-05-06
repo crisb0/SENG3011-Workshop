@@ -2,8 +2,11 @@
 from flask import Flask, render_template
 from datetime import datetime, date
 import requests, os
+from operator import itemgetter
+from itertools import islice
 
 app = Flask(__name__, static_url_path='/static')
+
 company = {'name':'COCA-COLA AMATIL LIMITED', 'asx':'CCL', 'fbName':'CocaColaAustralia'}
 now = datetime.now()
 now_date = now.strftime("%Y-%m-%d")
@@ -22,10 +25,24 @@ def register():
 
 @app.route('/dashboard')
 def dashboard():
+    
     end_date = (subtract_years(now, 1)).strftime("%Y-%m-%d")
-    stats = "id,name,website,description,category,fan_count,post_like_count,post_comment_count,post_type"
-    facebook = displayFacebookJSON(company.get('fbName'), end_date+'T00:00:00Z', now_date+'T00:00:00Z', stats)
-    return render_template("dashboard.html", company=company, facebook=facebook)
+    stats = "id,name,website,description,category,fan_count,post_like_count,post_comment_count,post_type,post_message"
+    facebook = displayFacebookJSON(company.get('fbName'), end_date+'T00:00:00Z', now_date+'T00:00:00Z', stats)['FacebookStatisticData']
+    
+    total_likes = 0
+    for post in facebook['posts']:
+        total_likes += post['post_like_count']
+
+    facebook_data={}
+    facebook_data['num_posts'] = len(facebook['posts'])
+    facebook_data['daily_posts'] = round(facebook_data['num_posts']/365, 2)
+    facebook_data['avg_react_per_post'] = round(total_likes/facebook_data['num_posts'], 2)
+    
+    # should be done by sentiment but whatever
+    post_popularity=islice(sort_posts(facebook['posts']), 10)
+
+    return render_template("dashboard.html", company=company, facebook=facebook, facebook_data=facebook_data, post_popularity=post_popularity)
 
 @app.route('/trackCampaigns')
 def trackCampaigns():
@@ -69,6 +86,10 @@ def subtract_years(dt, years):
     except ValueError:
         dt = dt.replace(year=dt.year-years, day=dt.day-1)
     return dt
+
+def sort_posts(posts):
+    result = sorted(posts, key=itemgetter('post_like_count'), reverse=True)
+    return result
 
 if __name__ == "__main__":
     app.run(debug=True)

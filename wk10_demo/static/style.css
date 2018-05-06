@@ -1308,7 +1308,7 @@ select {
 
 .app__menu {
   width: 100%;
-  position: relative; }
+  position: fixed; }
   @media (min-width: 992px) {
     .app__menu {
       display: block;
