@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<title>Evie by unDraw</title>
 	<!-- Don't forget to add your metadata here -->
-	<link rel='stylesheet' href='css/style.min.css' />
+	<link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
 	<!-- Hero(extended) navbar -->
@@ -16,8 +16,8 @@
 				<a href="index.html" class="navbar__logo">{NAME}</a>
 				<nav class="navbar__menu">
 					<ul>
-						<li><a target="_blank" rel="nofollow" href="https://evie.undraw.co/docs">Documentation</a></li>
-						<li><a href="auth.html">Log In</a></li>
+						<li><a target="_blank" rel="nofollow" href="https://yaminn.github.io">Documentation</a></li>
+						<li><a href="{{url_for('login')}}">Log In</a></li>
 					</ul>
 				</nav>
 				<div class="navbar__menu-mob"><a href="" id='toggle'><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" class=""></path></svg></a></div>
@@ -34,7 +34,7 @@
 					<div class="hero__content__inner" id='navConverter'>
 						<h1 class="hero__title">Achieve your goals.</h1>
 						<p class="hero__text">{NAME} is a tool to organise and achieve your campaign goals. Descript here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent congue faucibus nunc, ut vehicula elit dapibus non. Suspendisse potenti. Vestibulum ut imperdiet augue, non vestibulum risus. Phasellus eu pharetra tellus.</p>
-						<a href="auth.html" class="button button__accent">Get started with {NAME}!</a>
+						<a href="{{url_for('login')}}" class="button button__accent">Get started with {NAME}!</a>
                         <span id="scrollToNext" class="scroll">
 						<a href="#" class="button hero__button">Learn more</a></span>
 					</div>
@@ -57,14 +57,14 @@
 			<div class="steps__inner">
 				<div class="step">
 					<div class="step__media">
-						<img src="./images/undraw_designer.svg" class="step__image">
+						<img src="{{url_for('static', filename='images/undraw_designer.svg')}}" class="step__image">
 					</div>
 					<h4>Content Creators</h4>
 					<p class="step__text">Track your progress as an influencer. Strive to achieve the goals you've set for social engagement and reach.</p>
 				</div>
 				<div class="step">
 					<div class="step__media">
-						<img src="./images/undraw_creation.svg" class="step__image">
+						<img src="{{url_for('static', filename='images/undraw_creation.svg')}}" class="step__image">
 					</div>
 					<h4>Brands</h4>
 					<p class="step__text">Engage with your product users. Connect to their opinions to your work and view this in relation to your stocks.</p>
@@ -77,7 +77,7 @@
 		<div class="container">
 			<div class="expanded__inner">
 				<div class="expanded__media">
-					<img src="./images/undraw_everywhere.svg" class="expanded__image">
+					<img src="{{url_for('static', filename='images/undraw_everywhere.svg')}}" class="expanded__image">
 				</div>
 				<div class="expanded__content">
 					<h2 class="expanded__title">A platform to improve your company's performance</h2>
@@ -90,7 +90,7 @@
 		<div class="container">
 			<div class="expanded__inner">
 				<div class="expanded__media">
-					<img src="./images/undraw_browser.svg" class="expanded__image">
+					<img src="{{url_for('static', filename='images/undraw_browser.svg')}}" class="expanded__image">
 				</div>
 				<div class="expanded__content">
 					<h2 class="expanded__title">Intuitive representation of your campaign data</h2>
@@ -103,7 +103,7 @@
 		<div class="container">
 			<div class="expanded__inner">
 				<div class="expanded__media">
-					<img src="./images/undraw_fans.svg" class="expanded__image">
+					<img src="{{url_for('static', filename='images/undraw_fans.svg')}}" class="expanded__image">
 				</div>
 				<div class="expanded__content">
 					<h2 class="expanded__title">Track, manage and reach your goals for campaigns</h2>
@@ -118,7 +118,7 @@
 			<div class="cta__inner">
 				<h2 class="cta__title">Get started now</h2>
 				<p class="cta__sub cta__sub--center">Begin improving your company's social connect today!</p>
-				<a href="auth.html" class="button button__accent">Login or Register</a>
+				<a href="{{url_for('login')}}" class="button button__accent">Login or Register</a>
 			</div>
 		</div>
 	</div>
@@ -159,6 +159,6 @@
 			</div>
 		</div>
 	</div>
-<script src='js/app.min.js'></script>
+<script src="{{url_for('static', filename='js/app.min.js')}}"</script>
 </body>
 </html>
