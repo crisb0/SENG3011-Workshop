@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 @app.route('/')
 def index():
@@ -16,7 +16,7 @@ def register():
 
 @app.route('/dash')
 def dash():
-    return render_template("dash.html")
+    return render_template("dashboard.html")
 
 # add any other routes here!!!!
 
