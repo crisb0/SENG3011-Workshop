@@ -47,15 +47,10 @@ def dashboard():
 @app.route('/trackCampaigns')
 def trackCampaigns():
     return render_template("trackCampaigns.html")
-
-@app.route('/addCampaign')
-def addCampaign():
-    # return render_template("addCampaign.html")
-    return render_template("dashboard.html")
     
-@app.route('/create-goal')
-def goals():
-    return render_template("create_goals.html")
+@app.route('/createCampaign')
+def createCampaign():
+    return render_template("createCampaign.html")
 
 # add any other routes above
 
