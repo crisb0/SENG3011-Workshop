@@ -70,6 +70,10 @@ def all_campaigns(goals):
     print(goals)
     return render_template("createCampaign.html", goals=goals)
 
+@app.route('/viewCampaign')
+def viewCampaign():
+    return render_template("viewCampaign.html")
+
 # add any other routes above
 
 #helper methods
