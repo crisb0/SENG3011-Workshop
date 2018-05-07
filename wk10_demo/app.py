@@ -1,5 +1,5 @@
 #!flask/bin/python3
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from datetime import datetime, date
 import requests, os
 from operator import itemgetter
@@ -25,11 +25,11 @@ def register():
 
 @app.route('/dashboard')
 def dashboard():
-    
+
     end_date = (subtract_years(now, 1)).strftime("%Y-%m-%d")
     stats = "id,name,website,description,category,fan_count,post_like_count,post_comment_count,post_type,post_message"
     facebook = displayFacebookJSON(company.get('fbName'), end_date+'T00:00:00Z', now_date+'T00:00:00Z', stats)['FacebookStatisticData']
-    
+
     total_likes = 0
     for post in facebook['posts']:
         total_likes += post['post_like_count']
@@ -38,7 +38,7 @@ def dashboard():
     facebook_data['num_posts'] = len(facebook['posts'])
     facebook_data['daily_posts'] = round(facebook_data['num_posts']/365, 2)
     facebook_data['avg_react_per_post'] = round(total_likes/facebook_data['num_posts'], 2)
-    
+
     # should be done by sentiment but whatever
     post_popularity=islice(sort_posts(facebook['posts']), 10)
 
@@ -47,10 +47,28 @@ def dashboard():
 @app.route('/trackCampaigns')
 def trackCampaigns():
     return render_template("trackCampaigns.html")
-    
-@app.route('/createCampaign')
+
+@app.route('/createCampaign', methods=['GET', 'POST'])
 def createCampaign():
-    return render_template("createCampaign.html")
+    goals = []
+    form = request.form
+    if request.method == 'POST':
+        new_goal = {}
+        new_goal['Goal Start Date'] = request.form.get('start_date')
+        new_goal['Goal End Date'] = request.form.get('end_date')
+        new_goal['Comments target'] = request.form.get('comment_count')
+        new_goal['Likes target'] = request.form.get('like_count')
+        print(new_goal)
+        goals.append(new_goal)
+        return render_template("createCampaign.html", goals=goals)
+        #return all_campaigns(goals)
+    else:
+        return render_template("createCampaign.html", goals=[])
+
+@app.route('/campaigns', methods=['GET', 'POST'])
+def all_campaigns(goals):
+    print(goals)
+    return render_template("createCampaign.html", goals=goals)
 
 # add any other routes above
 
@@ -76,7 +94,7 @@ def displayFacebookJSON(page, start, end, stats):
 
     if 'Website' in result:
         result['Website'] = re.sub('.*//', '', result['Website'])
-    
+
     return result
 
 def subtract_years(dt, years):
