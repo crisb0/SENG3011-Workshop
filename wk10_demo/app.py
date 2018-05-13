@@ -1,16 +1,25 @@
 #!flask/bin/python3
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from datetime import datetime, date
 import requests, os
 from operator import itemgetter
 from itertools import islice
 from forms import LoginForm, RegistrationForm 
+from flask_login import LoginManager
+from user import User
 
 app = Flask(__name__, static_url_path='/static')
+lm = LoginManager(app)
 
 company = {'name':'COCA-COLA AMATIL LIMITED', 'asx':'CCL', 'fbName':'CocaColaAustralia'}
 now = datetime.now()
 now_date = now.strftime("%Y-%m-%d")
+
+@lm.user_loader
+def load_user(id):
+    from db_helpers import query_db
+    user = query_db('select * from users where id = %s'%(id), (), True)
+    return User(user)
 
 @app.route('/')
 def index():
@@ -39,7 +48,7 @@ def register():
                  'insert into users (email, password, companyName, companyUrl) values ("%s", "%s", "%s", "%s")'%(result['email'], result['password'], result['company_name'], result['company_url']) 
                  )
         db.commit()
-        return 
+        return redirect('/login')
     
     return render_template("reg.html", form=registration_form)
 
