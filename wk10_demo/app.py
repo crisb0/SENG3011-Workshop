@@ -4,6 +4,7 @@ from datetime import datetime, date
 import requests, os
 from operator import itemgetter
 from itertools import islice
+from forms import LoginForm, RegistrationForm 
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -19,9 +20,28 @@ def index():
 def login():
     return render_template("auth.html")
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template("reg.html")
+    import db_helpers
+
+    registration_form = RegistrationForm(request.form)
+    db = db_helpers.get_db()
+    cur = db.cursor()
+
+    if request.method == 'POST' and registration_form.validate():
+        result = request.form
+        # check that the company doesn't already exist
+        
+        # make db entry
+        #print('insert into users (email, password, companyName, companyUrl) values ("%s", "%s", "%s", "%s")'%(result['email'], result['password'], result['company_name'], result['company_url'])) 
+
+        cur.execute(
+                 'insert into users (email, password, companyName, companyUrl) values ("%s", "%s", "%s", "%s")'%(result['email'], result['password'], result['company_name'], result['company_url']) 
+                 )
+        db.commit()
+        return 
+    
+    return render_template("reg.html", form=registration_form)
 
 @app.route('/dashboard')
 def dashboard():

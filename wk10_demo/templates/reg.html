@@ -32,20 +32,20 @@
 				<div class="auth__auth">
 					<h1 class="auth__title">Register with Us</h1>
 					<p>Fill in the following details and we'll take care of the rest!</p>
-					<form method='post' action="/example" autocompelete="new-password" role="presentation" class="form">
-						<input name="email" class="fakefield">
-						<label>Company Name</label>
-						<input type="text" name="email" id='email' placeholder="e.g. qt3.14">
-                        <input name="domain" class="fakefield">
+					<form method='post' autocompelete="new-password" role="presentation" class="form">
+                        <label>Email</label>
+                        {{ form.email }}
+                        <label>Company Name</label>
+                        {{ form.company_name }}
                         <label>Company Domain</label>
-                        <input type="text" name="email" id="email" placeholder="e.g. https://you.com"</input>
-						<label>Password</label>
-						<input type="password" name="password" id='password' placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" autocomplete="off">
+                        {{ form.company_url }}
+                        <label>Password</label>
+                        {{ form.password }}
                         <label>Connect to the Facebook Analytics Platform<br><div style="font-size:80%;color:red;">Please ensure you log in to the Facebook Account associated with your company!</div></label>
                         <a href="#" class="button" style="width:100%;">Connect to Facebook</a>
 						<!--<button type='submit' class="button button__accent">Log in</button>-->
-                        <a href="{{url_for('dashboard')}}" class="button button__accent">Log In</a>
-						<a href="{{url_for('login')}}"><h6 class="left-align" >Already have an account? Login here.</h6></a>
+                        <input type=submit value=Register>
+                        <a href="{{url_for('login')}}"><h6 class="left-align" >Already have an account? Login here.</h6></a>
 					</form>
 				</div>
 			</div>
