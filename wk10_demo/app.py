@@ -5,10 +5,11 @@ import requests, os
 from operator import itemgetter
 from itertools import islice
 from forms import LoginForm, RegistrationForm 
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user, login_user
 from user import User
 
 app = Flask(__name__, static_url_path='/static')
+app.config['SECRET_KEY'] = 'this_is_a_secret'
 lm = LoginManager(app)
 
 company = {'name':'COCA-COLA AMATIL LIMITED', 'asx':'CCL', 'fbName':'CocaColaAustralia'}
@@ -23,11 +24,29 @@ def load_user(id):
 
 @app.route('/')
 def index():
+    print(current_user)
     return render_template("index.html")
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template("auth.html")
+    from db_helpers import query_db
+
+    login_form = LoginForm(request.form)
+
+    if request.method == 'POST' and login_form.validate():
+        result = request.form
+        print('select * from users where email = %s and password = %s' % (result['email'], result['password']))
+        user = query_db('select * from users where email = "%s" and password = "%s"' % (result['email'], result['password']), (), True)
+        
+        if user is None:
+            print('Invalid credentials')
+            return redirect('/login')
+        
+        user = load_user(user[0])
+        login_user(user)
+        return redirect('/')
+
+    return render_template("auth.html", form=login_form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
