@@ -35,7 +35,7 @@ def login():
 
     if request.method == 'POST' and login_form.validate():
         result = request.form
-        print('select * from users where email = %s and password = %s' % (result['email'], result['password']))
+        #print('select * from users where email = %s and password = %s' % (result['email'], result['password']))
         user = query_db('select * from users where email = "%s" and password = "%s"' % (result['email'], result['password']), (), True)
         
         if user is None:
@@ -44,7 +44,7 @@ def login():
         
         user = load_user(user[0])
         login_user(user)
-        return redirect('/')
+        return redirect('/dashboard')
 
     return render_template("auth.html", form=login_form)
 
@@ -98,20 +98,33 @@ def trackCampaigns():
 
 @app.route('/createCampaign', methods=['GET', 'POST'])
 def createCampaign():
-    goals = []
-    form = request.form
+    import db_helpers
+
+    db = db_helpers.get_db()
+    create_campaign_form = request.form
+    
     if request.method == 'POST':
-        new_goal = {}
-        new_goal['Goal Start Date'] = request.form.get('start_date')
-        new_goal['Goal End Date'] = request.form.get('end_date')
-        new_goal['Comments target'] = request.form.get('comment_count')
-        new_goal['Likes target'] = request.form.get('like_count')
-        print(new_goal)
-        goals.append(new_goal)
-        return render_template("createCampaign.html", goals=goals)
-        #return all_campaigns(goals)
-    else:
-        return render_template("createCampaign.html", goals=[])
+        #print('insert into campaigns (start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", %s, %s, %s, %s)'%(
+        #    create_campaign_form['start_date'], 
+        #    create_campaign_form['end_date'],
+        #    create_campaign_form['comment_count'],
+        #    create_campaign_form['sentiment_score'],
+        #    create_campaign_form['facebook_likes'],
+        #    create_campaign_form['like_count']
+        #    ))
+        query = db_helpers.query_db('insert into campaigns (start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", %s, %s, %s, %s)'%(
+            create_campaign_form['start_date'], 
+            create_campaign_form['end_date'],
+            create_campaign_form['comment_count'],
+            create_campaign_form['sentiment_score'],
+            create_campaign_form['facebook_likes'],
+            create_campaign_form['like_count']
+            )) 
+        
+        db.commit()
+        return render_template("createCampaign.html")
+    
+    return render_template("createCampaign.html")
 
 @app.route('/campaigns', methods=['GET', 'POST'])
 def all_campaigns(goals):
