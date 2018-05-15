@@ -107,21 +107,6 @@ def createCampaign():
     create_campaign_form = request.form
 
     if request.method == 'POST':
-        for i in create_campaign_form.keys():
-            print(i)
-
-        #print('insert into campaigns (name, description, tags, start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", "%s", "%s", "%s", %s, %s, %s, %s)'%(
-        #    create_campaign_form['name'],
-        #    create_campaign_form['description'],
-        #    create_campaign_form['tags'],
-        #    create_campaign_form['start_date'], 
-        #    create_campaign_form['end_date'],
-        #    create_campaign_form['comment_count'],
-        #    create_campaign_form['sentiment_score'],
-        #    create_campaign_form['facebook_likes'],
-        #    create_campaign_form['like_count']
-        #    ))
-        
         query = db_helpers.query_db('insert into campaigns (name, description, tags, start_date, end_date, comments_target, comments_sentiment_score, likes_target) values ("%s", "%s", "%s", "%s", "%s", %s, %s, %s)'%(
             create_campaign_form['campaign_name'],
             create_campaign_form['campaign_description'],
@@ -132,8 +117,13 @@ def createCampaign():
             create_campaign_form['sentiment_score'],
             create_campaign_form['like_count']
             )) 
-        
         db.commit()
+
+        campaign_id = db_helpers.query_db('select id from campaigns where name = "%s"'%(create_campaign_form['campaign_name']), (), True)
+
+        query = db_helpers.query_db('insert into user_campaigns (user_id, campaign_id) values (%s, %s)'%(current_user.id, campaign_id[0]))
+        db.commit()
+        
         return render_template("createCampaign.html")
     
     return render_template("createCampaign.html")
