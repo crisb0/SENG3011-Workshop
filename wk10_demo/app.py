@@ -5,7 +5,7 @@ import requests, os
 from operator import itemgetter
 from itertools import islice
 from forms import LoginForm, RegistrationForm 
-from flask_login import LoginManager, current_user, login_user
+from flask_login import LoginManager, current_user, login_user, login_required
 from user import User
 
 app = Flask(__name__, static_url_path='/static')
@@ -96,6 +96,7 @@ def dashboard():
 def trackCampaigns():
     return render_template("trackCampaigns.html")
 
+@login_required
 @app.route('/createCampaign', methods=['GET', 'POST'])
 def createCampaign():
     import db_helpers

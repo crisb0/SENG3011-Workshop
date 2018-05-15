@@ -17,3 +17,9 @@ create table campaigns(
     likes_percentage float not null,
     likes_target integer not null
 );
+
+drop table is exists user_campaigns;
+create table user_campaigns(
+    user_id integer references user(id),
+    campaign_id integer references campaign(id)
+);
