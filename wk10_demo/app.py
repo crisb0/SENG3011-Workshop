@@ -1,27 +1,75 @@
 #!flask/bin/python3
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from datetime import datetime, date
 import requests, os
 from operator import itemgetter
 from itertools import islice
+from forms import LoginForm, RegistrationForm 
+from flask_login import LoginManager, current_user, login_user, login_required
+from user import User
 
 app = Flask(__name__, static_url_path='/static')
+app.config['SECRET_KEY'] = 'this_is_a_secret'
+lm = LoginManager(app)
 
 company = {'name':'COCA-COLA AMATIL LIMITED', 'asx':'CCL', 'fbName':'CocaColaAustralia'}
 now = datetime.now()
 now_date = now.strftime("%Y-%m-%d")
 
+@lm.user_loader
+def load_user(id):
+    from db_helpers import query_db
+    user = query_db('select * from users where id = %s'%(id), (), True)
+    return User(user)
+
 @app.route('/')
 def index():
+    print(current_user)
     return render_template("index.html")
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template("auth.html")
+    from db_helpers import query_db
 
-@app.route('/register')
+    login_form = LoginForm(request.form)
+
+    if request.method == 'POST' and login_form.validate():
+        result = request.form
+        #print('select * from users where email = %s and password = %s' % (result['email'], result['password']))
+        user = query_db('select * from users where email = "%s" and password = "%s"' % (result['email'], result['password']), (), True)
+        
+        if user is None:
+            print('Invalid credentials')
+            return redirect('/login')
+        
+        user = load_user(user[0])
+        login_user(user)
+        return redirect('/dashboard')
+
+    return render_template("auth.html", form=login_form)
+
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template("reg.html")
+    import db_helpers
+
+    registration_form = RegistrationForm(request.form)
+    db = db_helpers.get_db()
+    cur = db.cursor()
+
+    if request.method == 'POST' and registration_form.validate():
+        result = request.form
+        # check that the company doesn't already exist
+        
+        # make db entry
+        #print('insert into users (email, password, companyName, companyUrl) values ("%s", "%s", "%s", "%s")'%(result['email'], result['password'], result['company_name'], result['company_url'])) 
+
+        cur.execute(
+                 'insert into users (email, password, companyName, companyUrl) values ("%s", "%s", "%s", "%s")'%(result['email'], result['password'], result['company_name'], result['company_url']) 
+                 )
+        db.commit()
+        return redirect('/login')
+    
+    return render_template("reg.html", form=registration_form)
 
 @app.route('/dashboard')
 def dashboard():
@@ -48,22 +96,36 @@ def dashboard():
 def trackCampaigns():
     return render_template("trackCampaigns.html")
 
+@login_required
 @app.route('/createCampaign', methods=['GET', 'POST'])
 def createCampaign():
-    goals = []
-    form = request.form
+    import db_helpers
+
+    db = db_helpers.get_db()
+    create_campaign_form = request.form
+    
     if request.method == 'POST':
-        new_goal = {}
-        new_goal['Goal Start Date'] = request.form.get('start_date')
-        new_goal['Goal End Date'] = request.form.get('end_date')
-        new_goal['Comments target'] = request.form.get('comment_count')
-        new_goal['Likes target'] = request.form.get('like_count')
-        print(new_goal)
-        goals.append(new_goal)
-        return render_template("createCampaign.html", goals=goals)
-        #return all_campaigns(goals)
-    else:
-        return render_template("createCampaign.html", goals=[])
+        #print('insert into campaigns (start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", %s, %s, %s, %s)'%(
+        #    create_campaign_form['start_date'], 
+        #    create_campaign_form['end_date'],
+        #    create_campaign_form['comment_count'],
+        #    create_campaign_form['sentiment_score'],
+        #    create_campaign_form['facebook_likes'],
+        #    create_campaign_form['like_count']
+        #    ))
+        query = db_helpers.query_db('insert into campaigns (start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", %s, %s, %s, %s)'%(
+            create_campaign_form['start_date'], 
+            create_campaign_form['end_date'],
+            create_campaign_form['comment_count'],
+            create_campaign_form['sentiment_score'],
+            create_campaign_form['facebook_likes'],
+            create_campaign_form['like_count']
+            )) 
+        
+        db.commit()
+        return render_template("createCampaign.html")
+    
+    return render_template("createCampaign.html")
 
 @app.route('/campaigns', methods=['GET', 'POST'])
 def all_campaigns(goals):
