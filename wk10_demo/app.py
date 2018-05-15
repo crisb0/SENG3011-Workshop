@@ -1,5 +1,5 @@
 #!flask/bin/python3
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime, date
 import requests, os
 from operator import itemgetter
@@ -11,6 +11,7 @@ from user import User
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'this_is_a_secret'
 lm = LoginManager(app)
+lm.login_view = '/login'
 
 company = {'name':'COCA-COLA AMATIL LIMITED', 'asx':'CCL', 'fbName':'CocaColaAustralia'}
 now = datetime.now()
@@ -72,6 +73,7 @@ def register():
     return render_template("reg.html", form=registration_form)
 
 @app.route('/dashboard')
+@login_required
 def dashboard():
 
     end_date = (subtract_years(now, 1)).strftime("%Y-%m-%d")
@@ -96,16 +98,22 @@ def dashboard():
 def trackCampaigns():
     return render_template("trackCampaigns.html")
 
-@login_required
 @app.route('/createCampaign', methods=['GET', 'POST'])
+@login_required
 def createCampaign():
     import db_helpers
 
     db = db_helpers.get_db()
     create_campaign_form = request.form
-    
+
     if request.method == 'POST':
-        #print('insert into campaigns (start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", %s, %s, %s, %s)'%(
+        for i in create_campaign_form.keys():
+            print(i)
+
+        #print('insert into campaigns (name, description, tags, start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", "%s", "%s", "%s", %s, %s, %s, %s)'%(
+        #    create_campaign_form['name'],
+        #    create_campaign_form['description'],
+        #    create_campaign_form['tags'],
         #    create_campaign_form['start_date'], 
         #    create_campaign_form['end_date'],
         #    create_campaign_form['comment_count'],
@@ -113,12 +121,15 @@ def createCampaign():
         #    create_campaign_form['facebook_likes'],
         #    create_campaign_form['like_count']
         #    ))
-        query = db_helpers.query_db('insert into campaigns (start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", %s, %s, %s, %s)'%(
+        
+        query = db_helpers.query_db('insert into campaigns (name, description, tags, start_date, end_date, comments_target, comments_sentiment_score, likes_target) values ("%s", "%s", "%s", "%s", "%s", %s, %s, %s)'%(
+            create_campaign_form['campaign_name'],
+            create_campaign_form['campaign_description'],
+            create_campaign_form['tags'],
             create_campaign_form['start_date'], 
             create_campaign_form['end_date'],
             create_campaign_form['comment_count'],
             create_campaign_form['sentiment_score'],
-            create_campaign_form['facebook_likes'],
             create_campaign_form['like_count']
             )) 
         
