@@ -25,3 +25,14 @@ create table user_campaigns(
     user_id integer references user(id),
     campaign_id integer references campaign(id)
 );
+
+drop table if exists events;
+create table events(
+    id integer primary key autoincrement,
+    event_name string not null,
+    event_description string not null,
+    event_type string not null,
+    start_date string not null,
+    end_date sting not null,
+    campaign integer references campaign(id)
+);

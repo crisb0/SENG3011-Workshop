@@ -25,7 +25,6 @@ def load_user(id):
 
 @app.route('/')
 def index():
-    print(current_user)
     return render_template("index.html")
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -95,7 +94,17 @@ def dashboard():
     return render_template("dashboard.html", company=company, facebook=facebook, facebook_data=facebook_data, post_popularity=post_popularity)
 
 @app.route('/trackCampaigns')
+@login_required
 def trackCampaigns():
+    import db_helpers
+
+    print(current_user.id)
+    
+    campaigns = db_helpers.query_db('select name, start_date, end_date from user_campaigns join campaigns on user_campaigns.campaign_id = campaigns.id where user_id = %s'%(current_user.id))
+
+    print(campaigns)
+     
+
     return render_template("trackCampaigns.html")
 
 @app.route('/createCampaign', methods=['GET', 'POST'])
