@@ -4,7 +4,7 @@ from datetime import datetime, date
 import requests, os
 from operator import itemgetter
 from itertools import islice
-from forms import LoginForm, RegistrationForm 
+from forms import LoginForm, RegistrationForm, EventForm
 from flask_login import LoginManager, current_user, login_user, login_required
 from user import User
 
@@ -100,12 +100,12 @@ def trackCampaigns():
 
     print(current_user.id)
     
-    campaigns = db_helpers.query_db('select name, start_date, end_date from user_campaigns join campaigns on user_campaigns.campaign_id = campaigns.id where user_id = %s'%(current_user.id))
+    campaigns = db_helpers.query_db('select id, name, start_date, end_date from user_campaigns join campaigns on user_campaigns.campaign_id = campaigns.id where user_id = %s'%(current_user.id))
 
     print(campaigns)
      
 
-    return render_template("trackCampaigns.html")
+    return render_template("trackCampaigns.html", campaigns = campaigns)
 
 @app.route('/createCampaign', methods=['GET', 'POST'])
 @login_required
@@ -142,9 +142,29 @@ def all_campaigns(goals):
     print(goals)
     return render_template("createCampaign.html", goals=goals)
 
-@app.route('/viewCampaign')
-def viewCampaign():
-    return render_template("viewCampaign.html")
+@app.route('/viewCampaign/<campaign_id>', methods=['GET', 'POST'])
+def viewCampaign(campaign_id):
+    import db_helpers
+
+    print(campaign_id)
+
+    events = db_helpers.query_db('select * from events where campaign = %s'%(campaign_id))
+
+    event_form = EventForm(request.form)
+
+    if request.method == 'POST':
+        query = db_helpers.query_db('insert into events (event_name, event_description, event_type, start_date, end_date, campaign) values ("%s", "%s", "%s", "%s", "%s", "%s")'%(
+            event_form['event_name'],
+            event_form['event_description'],
+            event_form['event_type'],
+            event_form['start_date'],
+            event_form['end_date'],
+            campaign_id
+            ))    
+        return render_template('vewCampaign.html', form = event_form, events = events)
+        
+
+    return render_template("viewCampaign.html", form = event_form, events = events)
 
 # add any other routes above
 
