@@ -1,16 +1,17 @@
 #!flask/bin/python3
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime, date
 import requests, os
 from operator import itemgetter
 from itertools import islice
-from forms import LoginForm, RegistrationForm 
+from forms import LoginForm, RegistrationForm, EventForm
 from flask_login import LoginManager, current_user, login_user, login_required
 from user import User
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'this_is_a_secret'
 lm = LoginManager(app)
+lm.login_view = '/login'
 
 company = {'name':'COCA-COLA AMATIL LIMITED', 'asx':'CCL', 'fbName':'CocaColaAustralia'}
 now = datetime.now()
@@ -24,7 +25,6 @@ def load_user(id):
 
 @app.route('/')
 def index():
-    print(current_user)
     return render_template("index.html")
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -72,6 +72,7 @@ def register():
     return render_template("reg.html", form=registration_form)
 
 @app.route('/dashboard')
+@login_required
 def dashboard():
 
     end_date = (subtract_years(now, 1)).strftime("%Y-%m-%d")
@@ -93,36 +94,45 @@ def dashboard():
     return render_template("dashboard.html", company=company, facebook=facebook, facebook_data=facebook_data, post_popularity=post_popularity)
 
 @app.route('/trackCampaigns')
-def trackCampaigns():
-    return render_template("trackCampaigns.html")
-
 @login_required
+def trackCampaigns():
+    import db_helpers
+
+    print(current_user.id)
+    
+    campaigns = db_helpers.query_db('select id, name, start_date, end_date from user_campaigns join campaigns on user_campaigns.campaign_id = campaigns.id where user_id = %s'%(current_user.id))
+
+    print(campaigns)
+     
+
+    return render_template("trackCampaigns.html", campaigns = campaigns)
+
 @app.route('/createCampaign', methods=['GET', 'POST'])
+@login_required
 def createCampaign():
     import db_helpers
 
     db = db_helpers.get_db()
     create_campaign_form = request.form
-    
+
     if request.method == 'POST':
-        #print('insert into campaigns (start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", %s, %s, %s, %s)'%(
-        #    create_campaign_form['start_date'], 
-        #    create_campaign_form['end_date'],
-        #    create_campaign_form['comment_count'],
-        #    create_campaign_form['sentiment_score'],
-        #    create_campaign_form['facebook_likes'],
-        #    create_campaign_form['like_count']
-        #    ))
-        query = db_helpers.query_db('insert into campaigns (start_date, end_date, comments_target, comments_sentiment_score, likes_percentage, likes_target) values ("%s", "%s", %s, %s, %s, %s)'%(
+        query = db_helpers.query_db('insert into campaigns (name, description, tags, start_date, end_date, comments_target, comments_sentiment_score, likes_target) values ("%s", "%s", "%s", "%s", "%s", %s, %s, %s)'%(
+            create_campaign_form['campaign_name'],
+            create_campaign_form['campaign_description'],
+            create_campaign_form['tags'],
             create_campaign_form['start_date'], 
             create_campaign_form['end_date'],
             create_campaign_form['comment_count'],
             create_campaign_form['sentiment_score'],
-            create_campaign_form['facebook_likes'],
             create_campaign_form['like_count']
             )) 
-        
         db.commit()
+
+        campaign_id = db_helpers.query_db('select id from campaigns where name = "%s"'%(create_campaign_form['campaign_name']), (), True)
+
+        query = db_helpers.query_db('insert into user_campaigns (user_id, campaign_id) values (%s, %s)'%(current_user.id, campaign_id[0]))
+        db.commit()
+        
         return render_template("createCampaign.html")
     
     return render_template("createCampaign.html")
@@ -132,9 +142,29 @@ def all_campaigns(goals):
     print(goals)
     return render_template("createCampaign.html", goals=goals)
 
-@app.route('/viewCampaign')
-def viewCampaign():
-    return render_template("viewCampaign.html")
+@app.route('/viewCampaign/<campaign_id>', methods=['GET', 'POST'])
+def viewCampaign(campaign_id):
+    import db_helpers
+
+    print(campaign_id)
+
+    events = db_helpers.query_db('select * from events where campaign = %s'%(campaign_id))
+
+    event_form = EventForm(request.form)
+
+    if request.method == 'POST':
+        query = db_helpers.query_db('insert into events (event_name, event_description, event_type, start_date, end_date, campaign) values ("%s", "%s", "%s", "%s", "%s", "%s")'%(
+            event_form['event_name'],
+            event_form['event_description'],
+            event_form['event_type'],
+            event_form['start_date'],
+            event_form['end_date'],
+            campaign_id
+            ))    
+        return render_template('vewCampaign.html', form = event_form, events = events)
+        
+
+    return render_template("viewCampaign.html", form = event_form, events = events)
 
 # add any other routes above
 
