@@ -8,7 +8,7 @@ gunicorn==18.0.0
 idna==2.6
 itsdangerous==0.24
 jsondiff==1.1.1
-Jinja2==2.10
+Jinja2==2.11.3
 MarkupSafe==1.0
 marshmallow==2.15.0
 pytz==2018.3
